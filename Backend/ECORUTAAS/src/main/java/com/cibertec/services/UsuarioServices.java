@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cibertec.dtos.AutenticacionFiltro;
 import com.cibertec.models.Usuario;
 import com.cibertec.repository.IRepositoryUsuario;
 
@@ -45,4 +46,23 @@ public class UsuarioServices {
 	    public void eliminar(Integer id) {
 	    	usuario.deleteById(id);
 	    }
+	    
+	    public Usuario autenticar(AutenticacionFiltro filter) {
+		    System.out.println("Buscando usuario con correo: " + filter.getCorreo());
+		    System.out.println("Y contraseña: " + filter.getPassword());
+		    
+		    Usuario usuarioRepo = usuario.findByCorreoAndPassword(filter.getCorreo(), filter.getPassword());
+		    
+		    if (usuarioRepo != null) {
+		        System.out.println("Usuario encontrado: " + usuarioRepo.getCorreo());
+		    } else {
+		        System.out.println("Usuario no encontrado con esas credenciales.");
+		    }
+
+		    if (usuarioRepo != null) {
+		        return usuarioRepo;
+		    }
+
+		    return null;
+		}
 }
