@@ -65,4 +65,9 @@ public class UsuarioServices {
 
 		    return null;
 		}
+	    
+	    public Usuario buscarPorId(Integer id) {
+	        return usuario.findById(id).orElse(null);
+	    }
+
 }

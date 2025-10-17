@@ -50,7 +50,16 @@ public class UsuarioController {
     public void eliminar(@PathVariable Integer id) {
         usuarioServices.eliminar(id);
     }
-    
+    @GetMapping("/{id}")
+    public ResponseEntity<Usuario> obtenerPorId(@PathVariable Integer id) {
+        Usuario usuarioEncontrado = usuarioServices.buscarPorId(id);
+        if (usuarioEncontrado != null) {
+            return ResponseEntity.ok(usuarioEncontrado);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AutenticacionFiltro filtro) {
         try {

@@ -18,25 +18,24 @@ public class VehiculoController {
     @Autowired
     private VehiculoServices vehiculoServices;
 
-    // 🔹 Listar vehículos
     @GetMapping
     public List<Vehiculo> listar() {
         return vehiculoServices.Carros();
     }
 
-    // 🔹 Registrar vehículo
+
     @PostMapping
     public Vehiculo insertar(@RequestBody Vehiculo nuevoVehiculo) {
         return vehiculoServices.Insertar(nuevoVehiculo);
     }
 
-    // 🔹 Actualizar vehículo
+
     @PutMapping("/{id}")
     public Vehiculo actualizar(@PathVariable Integer id, @RequestBody Vehiculo datos) {
         return vehiculoServices.Cambios(id, datos);
     }
 
-    // 🔹 Eliminar vehículo
+
     @DeleteMapping("/{id}")
     public void eliminar(@PathVariable Integer id) {
         vehiculoServices.Descartado(id);
