@@ -26,16 +26,14 @@ public class AlquilerServices {
     }
 
 
-    public Alquiler finalizarAlquiler(Integer id, Alquiler datos) {
-        Optional<Alquiler> alquilerExistente = alquilerRepo.findById(id);
-        if (alquilerExistente.isPresent()) {
-            Alquiler a = alquilerExistente.get();
-            a.setFecha_fin(datos.getFecha_fin());
-            a.setCosto(datos.getCosto());
-            a.setEstado(Alquiler.Estado.FINALIZADO);
-            return alquilerRepo.save(a);
-        } else {
-            return null;
-        }
+    public Alquiler actualizar(Integer id, Alquiler datos) {
+        Alquiler a = alquilerRepo.findById(id).orElseThrow(() -> new RuntimeException("No encontrado"));
+        a.setFecha_fin(datos.getFecha_fin());
+        a.setCosto(datos.getCosto());
+        a.setEstado(datos.getEstado());
+        a.setVehiculo(datos.getVehiculo());
+        a.setRuta(datos.getRuta());
+        a.setUsuario(datos.getUsuario());
+        return alquilerRepo.save(a);
     }
 }

@@ -1,1 +1,60 @@
-<p>listar works!</p>
+<div class="usuarios-container">
+  <h2>👤 Lista de Usuarios</h2>
+
+  <!-- 🔍 Buscar por ID -->
+  <div class="buscar-section">
+    <input
+      type="number"
+      [(ngModel)]="idBuscar"
+      placeholder="Buscar usuario por ID"
+      min="1"
+    />
+    <button (click)="buscarPorId()">Buscar</button>
+  </div>
+
+  <!-- Resultado de búsqueda -->
+  <div *ngIf="usuarioEncontrado" class="usuario-encontrado">
+    <h3>Resultado:</h3>
+    <p><strong>ID:</strong> {{ usuarioEncontrado.id_usuario }}</p>
+    <p><strong>Nombre:</strong> {{ usuarioEncontrado.nombre }} {{ usuarioEncontrado.apellido }}</p>
+    <p><strong>Correo:</strong> {{ usuarioEncontrado.correo }}</p>
+    <p><strong>Rol:</strong> {{ usuarioEncontrado.rol }}</p>
+    <button (click)="editarUsuario(usuarioEncontrado.id_usuario)">Editar</button>
+  </div>
+
+  <div *ngIf="mensaje" class="mensaje">{{ mensaje }}</div>
+
+  <!-- Tabla general -->
+  <div *ngIf="!cargando && usuarios.length > 0" class="tabla-usuarios">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Correo</th>
+          <th>Rol</th>
+          <th>Fecha Registro</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let usuario of usuarios">
+          <td>{{ usuario.id_usuario }}</td>
+          <td>{{ usuario.nombre }} {{ usuario.apellido }}</td>
+          <td>{{ usuario.correo }}</td>
+          <td>{{ usuario.rol }}</td>
+          <td>{{ usuario.fecha_registro | date: 'short' }}</td>
+          <td>
+            <button class="btn-editar" (click)="editarUsuario(usuario.id_usuario)">Editar</button>
+            <button class="btn-eliminar" (click)="eliminarUsuario(usuario.id_usuario)">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Sin datos -->
+  <div *ngIf="!cargando && usuarios.length === 0" class="no-data">
+    <p>No hay usuarios registrados.</p>
+  </div>
+</div>

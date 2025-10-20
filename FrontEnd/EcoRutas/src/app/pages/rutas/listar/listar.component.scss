@@ -1,0 +1,41 @@
+.rutas-container {
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 15px;
+  background: #fdfdfd;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.rutas-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.ruta-card {
+  background: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  border-left: 6px solid #00b894;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.ruta-card h3 {
+  color: #00b894;
+  margin-bottom: 10px;
+}
+
+.btn-eliminar {
+  margin-top: 10px;
+  background: #d63031;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-eliminar:hover {
+  background: #c0392b;
+}

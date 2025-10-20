@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Data
 @NoArgsConstructor
@@ -19,15 +20,20 @@ public class Vehiculo {
     @Enumerated(EnumType.STRING)
     private Tipo tipo;
 
-    @Column(unique = true)
     private String codigo_qr;
-
     private Boolean disponible = true;
     private String ubicacion_actual;
     private LocalDateTime fecha_registro = LocalDateTime.now();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "vehiculo")
     private List<Alquiler> alquileres;
 
-    public enum Tipo { BICICLETA, SCOOTER }
+    public enum Tipo { 
+        BICICLETA, 
+        SCOOTER, 
+        CAMINATA,    
+        CARPOOL     
+    }
+
 }

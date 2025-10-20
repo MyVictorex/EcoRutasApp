@@ -47,11 +47,12 @@ CREATE TABLE alquiler (
   fecha_inicio DATETIME DEFAULT CURRENT_TIMESTAMP,
   fecha_fin DATETIME,
   costo DECIMAL(6,2),
-  estado ENUM('en curso', 'finalizado') DEFAULT 'en curso',
+  estado ENUM('EN_CURSO', 'FINALIZADO') DEFAULT 'EN_CURSO',
   FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario),
   FOREIGN KEY (id_vehiculo) REFERENCES vehiculo(id_vehiculo),
   FOREIGN KEY (id_ruta) REFERENCES ruta(id_ruta)
 );
+ALTER TABLE alquiler MODIFY estado ENUM('EN_CURSO', 'FINALIZADO') DEFAULT 'EN_CURSO';
 
 
 CREATE TABLE logro (
@@ -95,3 +96,65 @@ CREATE TABLE estadistica (
   total_alquileres INT,
   co2_ahorrado DECIMAL(10,2)
 );
+
+
+INSERT INTO usuario (nombre, apellido, correo, password, rol) VALUES
+('Carlos', 'Ramírez', 'carlos@ecorutas.com', '123456', 'admin'),
+('María', 'Torres', 'maria@ecorutas.com', '123456', 'usuario'),
+('José', 'Quispe', 'jose@ecorutas.com', '123456', 'usuario'),
+('Lucía', 'Pérez', 'lucia@ecorutas.com', '123456', 'usuario'),
+('Ana', 'Gómez', 'ana@ecorutas.com', '123456', 'usuario');
+
+
+INSERT INTO ruta (nombre, descripcion, punto_inicio, punto_fin, distancia_km, tipo, estado, id_usuario) VALUES
+('Ruta Central', 'Recorrido principal por el centro de Lima', 'Plaza Mayor', 'Parque Kennedy', 8.5, 'bicicleta', 'activa', 1),
+('Ruta Verde', 'Ruta ecológica con árboles y poco tráfico', 'San Borja', 'Surco', 5.2, 'bicicleta', 'activa', 2),
+('Costa Ride', 'Ruta frente al mar por el circuito de playas', 'Miraflores', 'Chorrillos', 6.8, 'scooter', 'activa', 3),
+('Reto Urbano', 'Ruta con pendiente ideal para entrenamiento', 'Barranco', 'San Isidro', 7.0, 'bicicleta', 'activa', 4),
+('EcoCamino', 'Ruta peatonal con zonas verdes', 'La Molina', 'Camacho', 3.4, 'caminata', 'activa', 5);
+
+
+INSERT INTO vehiculo (tipo, codigo_qr, disponible, ubicacion_actual) VALUES
+('bicicleta', 'QRB-001', TRUE, 'Plaza Mayor'),
+('bicicleta', 'QRB-002', TRUE, 'San Borja'),
+('scooter', 'QRS-001', TRUE, 'Miraflores'),
+('bicicleta', 'QRB-003', FALSE, 'Barranco'),
+('scooter', 'QRS-002', TRUE, 'La Molina');
+
+INSERT INTO alquiler (id_usuario, id_vehiculo, id_ruta, fecha_inicio, fecha_fin, costo, estado) VALUES
+(2, 1, 1, '2025-10-01 08:30:00', '2025-10-01 09:10:00', 7.50, 'FINALIZADO'),
+(3, 2, 2, '2025-10-02 10:00:00', NULL, 0.00, 'EN_CURSO'),
+(4, 3, 3, '2025-10-03 14:15:00', '2025-10-03 14:50:00', 6.00, 'FINALIZADO'),
+(5, 4, 4, '2025-10-04 09:00:00', NULL, 0.00, 'EN_CURSO'),
+(2, 5, 5, '2025-10-05 07:45:00', '2025-10-05 08:20:00', 4.80, 'FINALIZADO');
+
+
+
+INSERT INTO logro (nombre, descripcion, puntos) VALUES
+('Primer Viaje', 'Completa tu primer recorrido', 10),
+('Ciclista Verde', 'Realiza 5 viajes en bicicleta', 20),
+('EcoRider', 'Ahorra más de 2kg de CO₂', 25),
+('Usuario Frecuente', 'Realiza más de 10 recorridos', 30),
+('Compromiso Verde', 'Participa durante 1 mes seguido', 40);
+
+INSERT INTO usuario_logro (id_usuario, id_logro) VALUES
+(2, 1),
+(2, 2),
+(3, 1),
+(4, 3),
+(5, 1);
+
+INSERT INTO historial_ruta (id_usuario, id_ruta, fecha_inicio, fecha_fin, distancia_recorrida, duracion_minutos, modo_transporte, co2_ahorrado) VALUES
+(2, 1, '2025-09-28 07:00:00', '2025-09-28 07:40:00', 8.5, 40, 'bicicleta', 1.2),
+(3, 2, '2025-09-29 08:15:00', '2025-09-29 08:50:00', 5.2, 35, 'bicicleta', 0.8),
+(4, 3, '2025-09-30 09:00:00', '2025-09-30 09:45:00', 6.8, 45, 'scooter', 0.6),
+(5, 4, '2025-10-01 10:10:00', '2025-10-01 10:50:00', 7.0, 40, 'bicicleta', 1.0),
+(2, 5, '2025-10-02 11:00:00', '2025-10-02 11:30:00', 3.4, 30, 'caminata', 0.2);
+
+
+INSERT INTO estadistica (fecha, total_usuarios, total_rutas, total_alquileres, co2_ahorrado) VALUES
+('2025-09-30', 5, 5, 5, 3.8),
+('2025-10-01', 5, 5, 6, 4.1),
+('2025-10-02', 5, 5, 7, 4.7),
+('2025-10-03', 5, 5, 8, 5.0),
+('2025-10-04', 5, 5, 9, 5.5);

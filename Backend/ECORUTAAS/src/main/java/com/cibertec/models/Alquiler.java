@@ -36,4 +36,3 @@ public class Alquiler {
 
     public enum Estado { EN_CURSO, FINALIZADO }
 }
-

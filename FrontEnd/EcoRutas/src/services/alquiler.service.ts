@@ -14,17 +14,16 @@ export class AlquilerService {
   constructor(private http: HttpClient) {}
 
 
-  listar(): Observable<Alquiler[]> {
-    return this.http.get<Alquiler[]>(this.apiUrl);
-  }
+listar(): Observable<Alquiler[]> {
+  return this.http.get<Alquiler[]>(this.apiUrl);
+}
 
+registrar(alquiler: Alquiler): Observable<Alquiler> {
+  return this.http.post<Alquiler>(this.apiUrl, alquiler);
+}
 
-  registrar(alquiler: Alquiler): Observable<Alquiler> {
-    return this.http.post<Alquiler>(this.apiUrl, alquiler);
-  }
+actualizar(id_alquiler: number, datos: Alquiler): Observable<Alquiler> {
+  return this.http.put<Alquiler>(`${this.apiUrl}/${id_alquiler}`, datos);
+}
 
-
-  finalizar(id_alquiler: number, datos: Alquiler): Observable<Alquiler> {
-    return this.http.put<Alquiler>(`${this.apiUrl}/${id_alquiler}/finalizar`, datos);
-  }
 }

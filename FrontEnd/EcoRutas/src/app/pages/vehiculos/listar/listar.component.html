@@ -1,1 +1,42 @@
-<p>listar works!</p>
+<div class="vehiculos-container">
+  <h2>🚲 Lista de Vehículos</h2>
+
+  <button class="btn-nuevo" (click)="nuevoVehiculo()">➕ Nuevo Vehículo</button>
+
+  <div *ngIf="cargando" class="loading">Cargando vehículos...</div>
+  <div *ngIf="errorMsg" class="error">{{ errorMsg }}</div>
+
+  <div *ngIf="!cargando && vehiculos.length > 0" class="tabla-vehiculos">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Tipo</th>
+          <th>Código QR</th>
+          <th>Disponible</th>
+          <th>Ubicación</th>
+          <th>Fecha Registro</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let vehiculo of vehiculos">
+          <td>{{ vehiculo.id_vehiculo }}</td>
+          <td>{{ vehiculo.tipo }}</td>
+          <td>{{ vehiculo.codigo_qr }}</td>
+          <td>{{ vehiculo.disponible ? '✅ Sí' : '❌ No' }}</td>
+          <td>{{ vehiculo.ubicacion_actual }}</td>
+          <td>{{ vehiculo.fecha_registro | date:'short' }}</td>
+          <td>
+            <button class="btn-editar" (click)="editarVehiculo(vehiculo.id_vehiculo)">Editar</button>
+            <button class="btn-eliminar" (click)="eliminarVehiculo(vehiculo.id_vehiculo)">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!cargando && vehiculos.length === 0" class="no-data">
+    <p>No hay vehículos registrados.</p>
+  </div>
+</div>

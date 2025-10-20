@@ -26,13 +26,15 @@ public class AlquilerController {
 
     @PostMapping
     public Alquiler registrar(@RequestBody Alquiler nuevoAlquiler) {
+        
+        nuevoAlquiler.setId_alquiler(null);
         return alquilerServices.registrar(nuevoAlquiler);
     }
 
 
-    @PutMapping("/{id}/finalizar")
-    public Alquiler finalizar(@PathVariable Integer id, @RequestBody Alquiler datos) {
-        return alquilerServices.finalizarAlquiler(id, datos);
+    @PutMapping("/{id}")
+    public Alquiler actualizar(@PathVariable Integer id, @RequestBody Alquiler datos) {
+        return alquilerServices.actualizar(id, datos);
     }
 }
 

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Data
 @NoArgsConstructor
@@ -34,12 +35,21 @@ public class Ruta {
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 
+    // 🔥 Ignora relaciones que causan recursión
+    @JsonIgnore
     @OneToMany(mappedBy = "ruta")
     private List<Alquiler> alquileres;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "ruta")
     private List<HistorialRuta> historialRutas;
 
     public enum Tipo { BICICLETA, SCOOTER, CAMINATA, CARPOOL }
     public enum Estado { ACTIVA, INACTIVA }
+    @PrePersist
+    protected void onCreate() {
+        this.fecha_creacion = LocalDateTime.now();
+    }
+
+     
 }

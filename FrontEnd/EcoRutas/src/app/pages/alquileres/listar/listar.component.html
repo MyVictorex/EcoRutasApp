@@ -1,1 +1,57 @@
-<p>listar works!</p>
+<div class="alquileres-container">
+  <h2>📋 Lista de Alquileres</h2>
+
+  <!-- 🔘 Botón para ir al formulario de registro -->
+  <div class="acciones-superior">
+    <button class="btn-nuevo" routerLink="/alquileres/nuevo">➕ Nuevo Alquiler</button>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading" *ngIf="cargando">
+    <p>Cargando alquileres...</p>
+  </div>
+
+  <!-- Error -->
+  <div class="error" *ngIf="errorMsg">
+    <p>{{ errorMsg }}</p>
+  </div>
+
+  <!-- Listado -->
+  <div *ngIf="!cargando && alquileres.length > 0" class="alquileres-list">
+    <div class="alquiler-card" *ngFor="let alquiler of alquileres">
+      <div class="info">
+        <h3>Alquiler #{{ alquiler.id_alquiler }}</h3>
+        <p><strong>Usuario:</strong> {{ alquiler.usuario.nombre }} {{ alquiler.usuario.apellido }}</p>
+        <p><strong>Vehículo:</strong> {{ alquiler.vehiculo.tipo }}</p>
+        <p><strong>Ruta:</strong> {{ alquiler.ruta.nombre }}</p>
+        <p><strong>Inicio:</strong> {{ alquiler.fecha_inicio | date: 'short' }}</p>
+        <p><strong>Fin:</strong> {{ alquiler.fecha_fin ? (alquiler.fecha_fin | date: 'short') : 'En curso' }}</p>
+        <p><strong>Costo:</strong> S/.{{ alquiler.costo }}</p>
+        <p class="estado" [ngClass]="alquiler.estado.toLowerCase()">
+          Estado: {{ alquiler.estado }}
+        </p>
+      </div>
+
+      <!-- ✏️ Botón editar -->
+      <div class="botones-card">
+        <button class="btn-editar" [routerLink]="['/alquileres/editar', alquiler.id_alquiler]">
+          ✏️ Editar
+        </button>
+
+        <!-- 🔚 Botón finalizar -->
+        <button
+          class="btn-finalizar"
+          *ngIf="alquiler.estado === 'EN_CURSO'"
+          (click)="finalizarAlquiler(alquiler)"
+        >
+          🔚 Finalizar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sin datos -->
+  <div *ngIf="!cargando && alquileres.length === 0" class="no-data">
+    <p>No hay alquileres registrados.</p>
+  </div>
+</div>
