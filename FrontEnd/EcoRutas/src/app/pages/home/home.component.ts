@@ -60,13 +60,16 @@ setTimeout(() => this.map.invalidateSize(), 200);
             iconSize: [40, 40]
           });
 
-          L.marker([randomLat, randomLng], { icon: icono })
-            .addTo(this.map)
-            .bindPopup(`
-              <b>${v.tipo}</b><br>
-              ${v.disponible ? '✅ Disponible' : '❌ Ocupado'}<br>
-              <button onclick="alert('Alquilar ${v.tipo}')">Alquilar</button>
-            `);
+         if (v.latitud && v.longitud) {
+  L.marker([v.latitud, v.longitud], { icon: icono })
+    .addTo(this.map)
+    .bindPopup(`
+      <b>${v.tipo}</b><br>
+      ${v.disponible ? '✅ Disponible' : '❌ Ocupado'}<br>
+      <button onclick="alert('Alquilar ${v.tipo}')">Alquilar</button>
+    `);
+}
+
         }
       });
     });

@@ -27,7 +27,23 @@ CREATE TABLE ruta (
   id_usuario INT,
   FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
 );
+SET SQL_SAFE_UPDATES = 1;
 
+UPDATE ruta 
+SET tipo = 'BICICLETA' 
+WHERE tipo = 'caminata';
+
+ALTER TABLE ruta 
+MODIFY COLUMN tipo ENUM(
+  'BICICLETA',
+  'SCOOTER',
+  'MONOPATIN_ELECTRICO',
+  'SEGWAY',
+  'CARPOOL'
+);
+ALTER TABLE vehiculo
+ADD COLUMN latitud DECIMAL(10,6),
+ADD COLUMN longitud DECIMAL(10,6);
 
 CREATE TABLE vehiculo (
   id_vehiculo INT AUTO_INCREMENT PRIMARY KEY,

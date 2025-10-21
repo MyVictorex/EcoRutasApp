@@ -24,6 +24,10 @@ public class Vehiculo {
     private Boolean disponible = true;
     private String ubicacion_actual;
     private LocalDateTime fecha_registro = LocalDateTime.now();
+    @Column
+    private Double latitud;
+    @Column
+    private Double longitud;
 
     @JsonIgnore
     @OneToMany(mappedBy = "vehiculo")

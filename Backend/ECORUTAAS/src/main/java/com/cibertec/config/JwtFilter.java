@@ -3,6 +3,7 @@ package com.cibertec.config;
 import java.io.IOException;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -23,7 +24,8 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final IRepositoryUsuario usuarioRepo;
-
+    
+    @Autowired
     public JwtFilter(JwtUtil jwtUtil, IRepositoryUsuario usuarioRepo) {
         this.jwtUtil = jwtUtil;
         this.usuarioRepo = usuarioRepo;

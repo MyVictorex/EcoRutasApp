@@ -14,13 +14,14 @@ import { Vehiculo } from '../../../../models/vehiculo';
 })
 export class FormComponent implements OnInit {
 
-vehiculo: Vehiculo = {
-  tipo: 'BICICLETA',
-  codigo_qr: '',
-  disponible: true,
-  ubicacion_actual: ''
-};
-
+  vehiculo: Vehiculo = {
+    tipo: 'BICICLETA',
+    codigo_qr: '',
+    disponible: true,
+    ubicacion_actual: '',
+    latitud: 0,
+    longitud: 0
+  };
 
   editando = false;
   mensaje = '';
@@ -37,6 +38,8 @@ vehiculo: Vehiculo = {
     if (id) {
       this.editando = true;
       this.obtenerVehiculo(Number(id));
+    } else {
+      this.obtenerUbicacionActual();
     }
   }
 
@@ -55,13 +58,28 @@ vehiculo: Vehiculo = {
     });
   }
 
+  obtenerUbicacionActual(): void {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          this.vehiculo.latitud = pos.coords.latitude;
+          this.vehiculo.longitud = pos.coords.longitude;
+          this.vehiculo.ubicacion_actual = 'Ubicación GPS detectada';
+        },
+        (err) => {
+          console.warn('Error al obtener la ubicación', err);
+          this.vehiculo.ubicacion_actual = 'Ubicación desconocida';
+        }
+      );
+    } else {
+      console.warn('Geolocalización no soportada');
+    }
+  }
+
   guardar(): void {
     this.cargando = true;
 
-    // 🚫 Evita enviar id_vehiculo = 0 cuando insertas
-    if (!this.editando) {
-      delete this.vehiculo.id_vehiculo;
-    }
+    if (!this.editando) delete this.vehiculo.id_vehiculo;
 
     const request = this.editando
       ? this.vehiculoService.actualizar(this.vehiculo.id_vehiculo!, this.vehiculo)
@@ -72,7 +90,6 @@ vehiculo: Vehiculo = {
         this.mensaje = this.editando
           ? '✅ Vehículo actualizado correctamente'
           : '✅ Vehículo registrado correctamente';
-
         this.cargando = false;
         setTimeout(() => this.router.navigate(['/vehiculos']), 1200);
       },

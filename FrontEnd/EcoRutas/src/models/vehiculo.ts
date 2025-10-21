@@ -8,4 +8,6 @@ export interface Vehiculo {
   ubicacion_actual: string;
   fecha_registro?: string;
   alquileres?: Alquiler[];
+    latitud?: number;   
+  longitud?: number; 
 }
