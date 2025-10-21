@@ -10,18 +10,17 @@ import { Vehiculo } from '../../../../models/vehiculo';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './form.component.html',
-  styleUrl: './form.component.scss'
+  styleUrls: ['./form.component.scss']
 })
 export class FormComponent implements OnInit {
 
-  vehiculo: Vehiculo = {
-    id_vehiculo: 0,
-    tipo: 'BICICLETA',
-    codigo_qr: '',
-    disponible: true,
-    ubicacion_actual: '',
-    fecha_registro: ''
-  };
+vehiculo: Vehiculo = {
+  tipo: 'BICICLETA',
+  codigo_qr: '',
+  disponible: true,
+  ubicacion_actual: ''
+};
+
 
   editando = false;
   mensaje = '';
@@ -30,7 +29,7 @@ export class FormComponent implements OnInit {
   constructor(
     private vehiculoService: VehiculoService,
     private route: ActivatedRoute,
-    public  router: Router
+    public router: Router
   ) {}
 
   ngOnInit(): void {
@@ -50,7 +49,7 @@ export class FormComponent implements OnInit {
         this.cargando = false;
       },
       error: () => {
-        this.mensaje = 'Error al cargar el vehículo ❌';
+        this.mensaje = '❌ Error al cargar el vehículo';
         this.cargando = false;
       }
     });
@@ -59,30 +58,29 @@ export class FormComponent implements OnInit {
   guardar(): void {
     this.cargando = true;
 
-    if (this.editando && this.vehiculo.id_vehiculo) {
-      this.vehiculoService.actualizar(this.vehiculo.id_vehiculo, this.vehiculo).subscribe({
-        next: () => {
-          this.mensaje = 'Vehículo actualizado correctamente ✅';
-          this.cargando = false;
-          setTimeout(() => this.router.navigate(['/vehiculos']), 1200);
-        },
-        error: () => {
-          this.mensaje = 'Error al actualizar el vehículo ❌';
-          this.cargando = false;
-        }
-      });
-    } else {
-      this.vehiculoService.insertar(this.vehiculo).subscribe({
-        next: () => {
-          this.mensaje = 'Vehículo registrado correctamente ✅';
-          this.cargando = false;
-          setTimeout(() => this.router.navigate(['/vehiculos']), 1200);
-        },
-        error: () => {
-          this.mensaje = 'Error al registrar el vehículo ❌';
-          this.cargando = false;
-        }
-      });
+    // 🚫 Evita enviar id_vehiculo = 0 cuando insertas
+    if (!this.editando) {
+      delete this.vehiculo.id_vehiculo;
     }
+
+    const request = this.editando
+      ? this.vehiculoService.actualizar(this.vehiculo.id_vehiculo!, this.vehiculo)
+      : this.vehiculoService.insertar(this.vehiculo);
+
+    request.subscribe({
+      next: () => {
+        this.mensaje = this.editando
+          ? '✅ Vehículo actualizado correctamente'
+          : '✅ Vehículo registrado correctamente';
+
+        this.cargando = false;
+        setTimeout(() => this.router.navigate(['/vehiculos']), 1200);
+      },
+      error: (err) => {
+        console.error(err);
+        this.mensaje = '❌ Error al guardar el vehículo';
+        this.cargando = false;
+      }
+    });
   }
 }

@@ -57,31 +57,33 @@ export class FormComponent implements OnInit {
   }
 
   guardar(): void {
-    this.cargando = true;
-    if (this.editando) {
-      this.usuarioService.actualizar(this.usuario.id_usuario!, this.usuario).subscribe({
-        next: () => {
-          this.mensaje = 'Usuario actualizado correctamente ✅';
-          this.volver();
-        },
-        error: () => {
-          this.mensaje = 'Error al actualizar el usuario ❌';
-          this.cargando = false;
-        }
-      });
-    } else {
-      this.usuarioService.insertar(this.usuario).subscribe({
-        next: () => {
-          this.mensaje = 'Usuario registrado correctamente ✅';
-          this.volver();
-        },
-        error: () => {
-          this.mensaje = 'Error al registrar el usuario ❌';
-          this.cargando = false;
-        }
-      });
-    }
+  this.cargando = true;
+
+ 
+  if (!this.editando) {
+    delete this.usuario.id_usuario;
   }
+
+  const request = this.editando
+    ? this.usuarioService.actualizar(this.usuario.id_usuario!, this.usuario)
+    : this.usuarioService.insertar(this.usuario);
+
+  request.subscribe({
+    next: () => {
+      this.mensaje = this.editando
+        ? '✅ Usuario actualizado correctamente'
+        : '✅ Usuario registrado correctamente';
+      this.cargando = false;
+      setTimeout(() => this.router.navigate(['/usuarios']), 1200);
+    },
+    error: (err) => {
+      console.error(err);
+      this.mensaje = '❌ Error al guardar el usuario';
+      this.cargando = false;
+    }
+  });
+}
+
 
   volver(): void {
     setTimeout(() => {

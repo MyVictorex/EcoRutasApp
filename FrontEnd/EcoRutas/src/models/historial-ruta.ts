@@ -9,6 +9,6 @@ export interface HistorialRuta {
   fecha_fin?: string;
   distancia_recorrida: number;
   duracion_minutos: number;
-  modo_transporte: 'BICICLETA' | 'SCOOTER' | 'CAMINATA' | 'CARPOOL';
+  modo_transporte: 'BICICLETA' | 'SCOOTER' | 'MONOPATIN_ELECTRICO' | 'SEGWAY' | 'CARPOOL';
   co2_ahorrado: number;
 }

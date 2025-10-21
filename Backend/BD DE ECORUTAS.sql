@@ -37,6 +37,14 @@ CREATE TABLE vehiculo (
   ubicacion_actual VARCHAR(150),
   fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+ALTER TABLE vehiculo 
+MODIFY tipo ENUM(
+  'BICICLETA',
+  'SCOOTER',
+  'CARPOOL',
+  'MONOPATIN_ELECTRICO',
+  'SEGWAY'
+) NOT NULL;
 
 
 CREATE TABLE alquiler (
@@ -81,11 +89,22 @@ CREATE TABLE historial_ruta (
   fecha_fin DATETIME,
   distancia_recorrida DECIMAL(5,2),
   duracion_minutos INT,
-  modo_transporte ENUM('bicicleta', 'scooter', 'caminata', 'carpool'),
+  modo_transporte ENUM(
+    'BICICLETA', 
+    'SCOOTER', 
+    'MONOPATIN_ELECTRICO', 
+    'SEGWAY', 
+    'CARPOOL'
+  ),
   co2_ahorrado DECIMAL(6,2),
   FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario),
   FOREIGN KEY (id_ruta) REFERENCES ruta(id_ruta)
 );
+
+
+
+
+
 
 
 CREATE TABLE estadistica (
@@ -97,7 +116,7 @@ CREATE TABLE estadistica (
   co2_ahorrado DECIMAL(10,2)
 );
 
-
+select*from usuario;
 INSERT INTO usuario (nombre, apellido, correo, password, rol) VALUES
 ('Carlos', 'Ramírez', 'carlos@ecorutas.com', '123456', 'admin'),
 ('María', 'Torres', 'maria@ecorutas.com', '123456', 'usuario'),
@@ -105,6 +124,9 @@ INSERT INTO usuario (nombre, apellido, correo, password, rol) VALUES
 ('Lucía', 'Pérez', 'lucia@ecorutas.com', '123456', 'usuario'),
 ('Ana', 'Gómez', 'ana@ecorutas.com', '123456', 'usuario');
 
+INSERT INTO usuario (nombre, apellido, correo, password, rol, fecha_registro) VALUES
+('Diego', 'Fernández', 'diego@ecorutas.com', '123456', 'usuario', '2025-10-06 10:30:00'),
+('Valeria', 'Campos', 'valeria@ecorutas.com', '123456', 'usuario', '2025-10-07 09:45:00');
 
 INSERT INTO ruta (nombre, descripcion, punto_inicio, punto_fin, distancia_km, tipo, estado, id_usuario) VALUES
 ('Ruta Central', 'Recorrido principal por el centro de Lima', 'Plaza Mayor', 'Parque Kennedy', 8.5, 'bicicleta', 'activa', 1),
@@ -114,12 +136,25 @@ INSERT INTO ruta (nombre, descripcion, punto_inicio, punto_fin, distancia_km, ti
 ('EcoCamino', 'Ruta peatonal con zonas verdes', 'La Molina', 'Camacho', 3.4, 'caminata', 'activa', 5);
 
 
+
+INSERT INTO ruta (nombre, descripcion, punto_inicio, punto_fin, distancia_km, tipo, estado, fecha_creacion, id_usuario) VALUES
+('Ruta Central', 'Recorrido principal por el centro de Lima', 'Plaza Mayor', 'Parque Kennedy', 8.5, 'bicicleta', 'activa', '2025-10-01 08:30:00', 1),
+('Ruta Verde', 'Ruta ecológica con árboles y poco tráfico', 'San Borja', 'Surco', 5.2, 'bicicleta', 'activa', '2025-10-02 09:15:00', 2);
+
+select*from Ruta;
+
 INSERT INTO vehiculo (tipo, codigo_qr, disponible, ubicacion_actual) VALUES
 ('bicicleta', 'QRB-001', TRUE, 'Plaza Mayor'),
 ('bicicleta', 'QRB-002', TRUE, 'San Borja'),
 ('scooter', 'QRS-001', TRUE, 'Miraflores'),
 ('bicicleta', 'QRB-003', FALSE, 'Barranco'),
 ('scooter', 'QRS-002', TRUE, 'La Molina');
+
+
+INSERT INTO vehiculo (tipo, codigo_qr, disponible, ubicacion_actual, fecha_registro) VALUES
+('bicicleta', 'QRB-006', TRUE, 'Plaza Mayor', '2025-10-01 08:00:00'),
+('scooter', 'QRS-006', TRUE, 'Miraflores', '2025-10-02 09:45:00');
+
 
 INSERT INTO alquiler (id_usuario, id_vehiculo, id_ruta, fecha_inicio, fecha_fin, costo, estado) VALUES
 (2, 1, 1, '2025-10-01 08:30:00', '2025-10-01 09:10:00', 7.50, 'FINALIZADO'),

@@ -17,13 +17,15 @@
     <label for="distancia_km">Distancia (km)</label>
     <input type="number" id="distancia_km" [(ngModel)]="ruta.distancia_km" name="distancia_km" min="0" required>
 
-    <label for="tipo">Tipo de ruta</label>
-    <select id="tipo" [(ngModel)]="ruta.tipo" name="tipo">
-      <option value="BICICLETA">Bicicleta</option>
-      <option value="SCOOTER">Scooter</option>
-      <option value="CAMINATA">Caminata</option>
-      <option value="CARPOOL">Carpool</option>
-    </select>
+   <label for="tipo">Tipo de Ruta</label>
+<select id="tipo" [(ngModel)]="ruta.tipo" name="tipo" required>
+  <option value="BICICLETA">Bicicleta</option>
+  <option value="SCOOTER">Scooter</option>
+  <option value="MONOPATIN_ELECTRICO">Monopatín Eléctrico</option>
+  <option value="SEGWAY">Segway</option>
+  <option value="CARPOOL">Carpool</option>
+</select>
+
 
     <label for="estado">Estado</label>
     <select id="estado" [(ngModel)]="ruta.estado" name="estado">

@@ -44,7 +44,7 @@ public class Ruta {
     @OneToMany(mappedBy = "ruta")
     private List<HistorialRuta> historialRutas;
 
-    public enum Tipo { BICICLETA, SCOOTER, CAMINATA, CARPOOL }
+    public enum Tipo { BICICLETA, SCOOTER, MONOPATIN_ELECTRICO, CARPOOL,SEGWAY }
     public enum Estado { ACTIVA, INACTIVA }
     @PrePersist
     protected void onCreate() {

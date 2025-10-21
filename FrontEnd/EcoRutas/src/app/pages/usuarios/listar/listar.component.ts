@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router,RouterModule  } from '@angular/router';
 import { UsuarioService } from '../../../../services/usuario.service';
 import { Usuario } from '../../../../models/usuario';
 import { FormsModule } from '@angular/forms';
@@ -8,7 +8,7 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-listar',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,RouterModule ],
   templateUrl: './listar.component.html',
   styleUrl: './listar.component.scss'
 })
@@ -22,7 +22,7 @@ export class ListarComponent implements OnInit {
 
   constructor(
     private usuarioService: UsuarioService,
-    private router: Router
+    public router: Router
   ) {}
 
   ngOnInit(): void {

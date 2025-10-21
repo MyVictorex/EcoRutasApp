@@ -32,7 +32,8 @@ public class Vehiculo {
     public enum Tipo { 
         BICICLETA, 
         SCOOTER, 
-        CAMINATA,    
+        MONOPATIN_ELECTRICO,
+        SEGWAY,   
         CARPOOL     
     }
 

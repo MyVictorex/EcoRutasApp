@@ -2,7 +2,7 @@ import { Alquiler } from './alquiler';
 
 export interface Vehiculo {
   id_vehiculo?: number;
-  tipo: 'BICICLETA' | 'SCOOTER';
+  tipo: 'BICICLETA' | 'SCOOTER' | 'MONOPATIN_ELECTRICO' | 'SEGWAY' | 'CARPOOL';
   codigo_qr: string;
   disponible: boolean;
   ubicacion_actual: string;

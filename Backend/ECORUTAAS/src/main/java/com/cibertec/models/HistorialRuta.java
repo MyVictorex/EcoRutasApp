@@ -33,6 +33,6 @@ public class HistorialRuta {
 
     private Double co2_ahorrado;
 
-    public enum ModoTransporte { BICICLETA, SCOOTER, CAMINATA, CARPOOL }
+    public enum ModoTransporte { BICICLETA, SCOOTER, MONOPATIN_ELECTRICO, CARPOOL ,SEGWAY}
 }
 

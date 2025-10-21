@@ -36,10 +36,10 @@ export const routes: Routes = [
   { path: 'rutas/nuevo', component: RutaForm },
   { path: 'rutas/editar/:id', component: RutaForm },
 
-  // 👤 Usuarios
-  { path: 'usuarios', component: UsuarioListar },
-  { path: 'usuarios/nuevo', component: UsuarioForm },
-  { path: 'usuarios/editar/:id', component: UsuarioForm },
+ { path: 'usuarios', component: UsuarioListar },
+{ path: 'usuarios/nuevo', component: UsuarioForm },
+{ path: 'usuarios/editar/:id', component: UsuarioForm },
+
 
   // 🚘 Vehículos
   { path: 'vehiculos', component: VehiculoListar },

@@ -4,12 +4,14 @@
   <form (ngSubmit)="guardar()">
     <!-- Tipo -->
     <label for="tipo">Tipo de Vehículo</label>
-    <select id="tipo" [(ngModel)]="vehiculo.tipo" name="tipo" required>
-      <option value="BICICLETA">Bicicleta</option>
-      <option value="SCOOTER">Scooter</option>
-      <option value="CAMINATA">Caminata</option>
-        <option value="CARPOOL">Carpool</option>
-    </select>
+<select id="tipo" [(ngModel)]="vehiculo.tipo" name="tipo" required>
+  <option value="BICICLETA"> Bicicleta</option>
+  <option value="SCOOTER"> Scooter</option>
+  <option value="MONOPATIN_ELECTRICO"> Monopatín Eléctrico</option>
+  <option value="SEGWAY"> Segway</option>
+  <option value="CARPOOL"> Carpool</option>
+</select>
+
 
     <!-- Código QR -->
     <label for="codigo_qr">Código QR</label>

@@ -9,7 +9,7 @@ export interface Ruta {
   punto_inicio: string;
   punto_fin: string;
   distancia_km: number;
-  tipo: 'BICICLETA' | 'SCOOTER' | 'CAMINATA' | 'CARPOOL';
+  tipo: 'BICICLETA' | 'SCOOTER' | 'MONOPATIN_ELECTRICO' | 'SEGWAY' | 'CARPOOL';
   estado: 'ACTIVA' | 'INACTIVA';
   fecha_creacion?: string;
   usuario: Usuario;
