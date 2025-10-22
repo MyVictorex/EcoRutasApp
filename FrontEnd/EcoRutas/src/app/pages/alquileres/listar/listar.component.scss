@@ -1,50 +1,583 @@
-.alquileres-container {
-  padding: 1rem;
-  text-align: center;
+/* alquileres-styles.css */
+/* Estilos responsivos para la página de alquileres EcoRutas */
+
+/* Reset y base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #f1f8e9 0%, #e8f5e8 100%);
+  min-height: 100vh;
+  color: #2d3748;
+  line-height: 1.6;
+  padding: 1rem;
+}
+
+/* Contenedor principal */
+.alquileres-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+}
+
+/* Header */
+.alquileres-container h2 {
+  text-align: center;
+  font-size: 1.8rem;
+  color: #1b4332;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+  padding: 2rem 1rem 0;
+}
+
+/* Botón superior */
 .acciones-superior {
-  text-align: right;
-  margin-bottom: 1rem;
+  text-align: center;
+  padding: 0 1rem 2rem;
+  border-bottom: 2px solid #e8f5e8;
+  margin: 0 1rem 2rem;
 }
 
 .btn-nuevo {
-  background-color: #4caf50;
+  background: linear-gradient(135deg, #2d6a4f 0%, #40916c 100%);
   color: white;
-  padding: 8px 16px;
   border: none;
-  border-radius: 8px;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
   cursor: pointer;
+  box-shadow: 0 4px 15px rgba(45, 106, 79, 0.3);
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 200px;
+  justify-content: center;
 }
 
+.btn-nuevo:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(45, 106, 79, 0.4);
+  background: linear-gradient(135deg, #40916c 0%, #1b4332 100%);
+}
+
+/* Estados de carga y error */
+.loading, .error, .no-data {
+  text-align: center;
+  padding: 4rem 2rem;
+  margin: 2rem;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.loading p, .error p, .no-data p {
+  font-size: 1.1rem;
+  color: #4a5568;
+  margin-top: 1rem;
+}
+
+.error {
+  background: rgba(253, 237, 237, 0.8);
+  border: 1px solid #feb2b2;
+}
+
+.error p {
+  color: #c53030;
+}
+
+/* Spinner de carga */
+.loading::before {
+  content: "";
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  border: 4px solid #e8f5e8;
+  border-top: 4px solid #2d6a4f;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Lista de alquileres */
+.alquileres-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  padding: 0 1rem 2rem;
+}
+
+/* Tarjeta de alquiler */
 .alquiler-card {
-  background: #f9f9f9;
-  margin: 12px 0;
-  padding: 1rem;
-  border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  border-left: 6px solid #2d6a4f;
+  border-top: 1px solid #e8f5e8;
+  border-right: 1px solid #e8f5e8;
+  border-bottom: 1px solid #e8f5e8;
 }
 
+.alquiler-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #2d6a4f, #40916c);
+  opacity: 0.8;
+}
+
+.alquiler-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Información de la tarjeta */
+.info h3 {
+  color: #1b4332;
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #e8f5e8;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.info h3::before {
+  content: "📋";
+  font-size: 1.2rem;
+}
+
+.info p {
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+  color: #4a5568;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.5rem;
+  line-height: 1.5;
+}
+
+.info strong {
+  color: #1b4332;
+  font-weight: 600;
+  min-width: 80px;
+  flex-shrink: 0;
+}
+
+/* Estados de alquiler */
+.estado {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
+  gap: 0.5rem;
+}
+
+.estado::before {
+  font-size: 1rem;
+}
+
+.estado.en_curso {
+  background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+  color: #856404;
+  border: 1px solid #f39c12;
+}
+
+.estado.en_curso::before {
+  content: "⏳";
+}
+
+.estado.finalizado {
+  background: linear-gradient(135deg, #d1e7dd, #badbcc);
+  color: #0f5132;
+  border: 1px solid #38a169;
+}
+
+.estado.finalizado::before {
+  content: "✅";
+}
+
+.estado.cancelado {
+  background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+  color: #721c24;
+  border: 1px solid #e53e3e;
+}
+
+.estado.cancelado::before {
+  content: "❌";
+}
+
+.estado.pendiente {
+  background: linear-gradient(135deg, #cce7ff, #b3d9ff);
+  color: #004085;
+  border: 1px solid #3182ce;
+}
+
+.estado.pendiente::before {
+  content: "⏰";
+}
+
+/* Botones de la tarjeta */
 .botones-card {
   display: flex;
-  justify-content: space-around;
-  margin-top: 10px;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid #e8f5e8;
+  flex-wrap: wrap;
+}
+
+.btn-editar, .btn-finalizar {
+  flex: 1;
+  min-width: 120px;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 .btn-editar {
-  background-color: #1976d2;
+  background: linear-gradient(135deg, #74c69d 0%, #40916c 100%);
   color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 8px;
-  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(116, 198, 157, 0.3);
+}
+
+.btn-editar:hover {
+  background: linear-gradient(135deg, #40916c 0%, #2d6a4f 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(116, 198, 157, 0.4);
 }
 
 .btn-finalizar {
-  background-color: #f44336;
+  background: linear-gradient(135deg, #f9a826 0%, #f39c12 100%);
   color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 8px;
-  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(249, 168, 38, 0.3);
+}
+
+.btn-finalizar:hover {
+  background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(249, 168, 38, 0.4);
+}
+
+/* Estado sin datos */
+.no-data {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: linear-gradient(135deg, #f8fff8, #e8f5e8);
+  border-radius: 16px;
+  margin: 2rem;
+  border: 2px dashed #c8e6c9;
+}
+
+.no-data::before {
+  content: "🚲";
+  font-size: 4rem;
+  display: block;
+  margin-bottom: 1rem;
+  opacity: 0.7;
+}
+
+.no-data p {
+  font-size: 1.2rem;
+  color: #4a5568;
+  margin-top: 0.5rem;
+  font-weight: 500;
+}
+
+/* Media Queries para tablets */
+@media (min-width: 768px) {
+  body {
+    padding: 2rem;
+  }
+
+  .alquileres-container {
+    margin: 1rem auto;
+  }
+
+  .alquileres-container h2 {
+    font-size: 2.2rem;
+    padding: 2.5rem 2rem 0;
+  }
+
+  .acciones-superior {
+    padding: 0 2rem 2.5rem;
+    margin: 0 2rem 2.5rem;
+  }
+
+  .alquileres-list {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    padding: 0 2rem 2.5rem;
+  }
+
+  .btn-nuevo {
+    font-size: 1.2rem;
+    padding: 1.2rem 2.5rem;
+    min-width: 250px;
+  }
+
+  .alquiler-card {
+    padding: 2rem;
+  }
+
+  .info h3 {
+    font-size: 1.5rem;
+  }
+
+  .info p {
+    font-size: 1rem;
+  }
+
+  .botones-card {
+    gap: 1rem;
+  }
+
+  .btn-editar, .btn-finalizar {
+    font-size: 1rem;
+    padding: 0.9rem 1.2rem;
+    min-width: 140px;
+  }
+}
+
+/* Media Queries para desktop */
+@media (min-width: 1024px) {
+  .alquileres-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .info h3 {
+    font-size: 1.6rem;
+  }
+
+  /* Mejor distribución del contenido en tarjetas más grandes */
+  .info p {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 0.75rem;
+    align-items: start;
+  }
+
+  .info strong {
+    min-width: auto;
+  }
+}
+
+/* Media Queries para pantallas grandes */
+@media (min-width: 1440px) {
+  .alquileres-container {
+    max-width: 1400px;
+  }
+
+  .alquileres-list {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Estados de los botones cuando están deshabilitados */
+.btn-editar:disabled,
+.btn-finalizar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-editar:disabled:hover,
+.btn-finalizar:disabled:hover {
+  transform: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Mejoras de accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+  .alquiler-card,
+  .btn-nuevo,
+  .btn-editar,
+  .btn-finalizar {
+    transition: none;
+    transform: none;
+  }
+}
+
+/* Modo oscuro opcional */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+    color: #e2e8f0;
+  }
+
+  .alquileres-container {
+    background: rgba(45, 55, 72, 0.95);
+    color: #e2e8f0;
+  }
+
+  .alquiler-card {
+    background: #2d3748;
+    color: #e2e8f0;
+    border-color: #4a5568;
+  }
+
+  .info h3 {
+    color: #81e6d9;
+    border-color: #4a5568;
+  }
+
+  .info strong {
+    color: #90cdf4;
+  }
+
+  .info p {
+    color: #cbd5e0;
+  }
+
+  .loading, .error, .no-data {
+    background: rgba(45, 55, 72, 0.9);
+  }
+
+  .loading p, .error p, .no-data p {
+    color: #cbd5e0;
+  }
+
+  .no-data {
+    background: linear-gradient(135deg, #2d3748, #4a5568);
+    border-color: #4a5568;
+  }
+
+  /* Estados en modo oscuro */
+  .estado.en_curso {
+    background: linear-gradient(135deg, #453411, #744210);
+    color: #f6e05e;
+    border-color: #d69e2e;
+  }
+
+  .estado.finalizado {
+    background: linear-gradient(135deg, #1c4532, #22543d);
+    color: #68d391;
+    border-color: #38a169;
+  }
+
+  .estado.cancelado {
+    background: linear-gradient(135deg, #742a2a, #c53030);
+    color: #fc8181;
+    border-color: #e53e3e;
+  }
+
+  .estado.pendiente {
+    background: linear-gradient(135deg, #2a4365, #3182ce);
+    color: #63b3ed;
+    border-color: #4299e1;
+  }
+}
+
+/* Estados de enfoque para accesibilidad */
+.btn-nuevo:focus,
+.btn-editar:focus,
+.btn-finalizar:focus {
+  outline: 3px solid #2d6a4f;
+  outline-offset: 2px;
+}
+
+/* Scroll suave */
+.alquileres-list {
+  scroll-behavior: smooth;
+}
+
+/* Mejoras para impresión */
+@media print {
+  .acciones-superior,
+  .botones-card {
+    display: none;
+  }
+
+  .alquiler-card {
+    break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #ccc;
+    margin-bottom: 1rem;
+  }
+}
+
+/* Indicador visual para alquileres en curso */
+.alquiler-card:has(.estado.en_curso) {
+  border-left-color: #f39c12;
+  background: linear-gradient(135deg, #ffffff 0%, #fff9e6 100%);
+}
+
+@media (prefers-color-scheme: dark) {
+  .alquiler-card:has(.estado.en_curso) {
+    background: linear-gradient(135deg, #2d3748 0%, #453411 100%);
+  }
+}
+
+/* Efecto de brillo para tarjetas importantes */
+.alquiler-card:has(.estado.en_curso)::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 16px;
+  box-shadow: 0 0 20px rgba(243, 156, 18, 0.3);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.alquiler-card:has(.estado.en_curso):hover::after {
+  opacity: 1;
+}
+
+/* Responsividad mejorada para móviles muy pequeños */
+@media (max-width: 380px) {
+  .botones-card {
+    flex-direction: column;
+  }
+  
+  .btn-editar, .btn-finalizar {
+    min-width: 100%;
+  }
+  
+  .info p {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .info strong {
+    min-width: auto;
+  }
 }
