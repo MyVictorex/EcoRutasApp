@@ -59,7 +59,7 @@ export class FormComponent implements OnInit {
   guardar(): void {
   this.cargando = true;
 
- 
+
   if (!this.editando) {
     delete this.usuario.id_usuario;
   }

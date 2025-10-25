@@ -141,7 +141,6 @@ class RegistrarActivity : AppCompatActivity() {
                         toast("Error: ${it.message}")
                     }
 
-
             } catch (e: ApiException) {
                 toast("Error Google Sign-In: ${e.message}")
             }
