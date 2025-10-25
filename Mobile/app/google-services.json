@@ -14,6 +14,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "100634655299-g50jup6bjc2mp2ccn66hu928kem7ardb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cibertec.proyectoecorutasapp",
+            "certificate_hash": "17a760bcc576d8cb043442f93f9715fd7a94da91"
+          }
+        },
+        {
+          "client_id": "100634655299-o45cef5h42eragodj591o57nidvrlkb1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cibertec.proyectoecorutasapp",
+            "certificate_hash": "28936aab51dc68bb074ad78fba9e4738aed52af7"
+          }
+        },
+        {
           "client_id": "100634655299-7da5s4nrgo3avo60c7p9fvfih5shrpeo.apps.googleusercontent.com",
           "client_type": 3
         }
