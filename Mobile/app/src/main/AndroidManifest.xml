@@ -5,9 +5,13 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
+<<<<<<< HEAD
 
 
 
+=======
+        android:name=".AppContext"
+>>>>>>> d6e8e21 (PROYECTo Android back de conexion hecho falta algunas cositas)
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"

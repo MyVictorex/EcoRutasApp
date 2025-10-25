@@ -29,6 +29,7 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -51,6 +52,7 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
 
+<<<<<<< HEAD
     implementation(platform("com.google.firebase:firebase-bom:${libs.versions.firebaseBom.get()}"))
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
@@ -60,3 +62,10 @@ dependencies {
     implementation(libs.play.services.location)
 
 }
+=======
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:okhttp:4.10.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
+}
+>>>>>>> d6e8e21 (PROYECTo Android back de conexion hecho falta algunas cositas)
