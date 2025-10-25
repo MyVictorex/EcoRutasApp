@@ -1,0 +1,36 @@
+<resources>
+
+    <string name="app_name">EcoRutasApp</string>
+    <string name="mapa_rutas">Mapa de Rutas</string>
+    <string name="menu">Menú</string>
+    <string name="perfil">Perfil</string>
+    <string name="agregar">Agregar marcador</string>
+    <string name="ubicacion">Centrar en ubicación</string>
+    <string name="brujula">Mostrar brújula</string>
+    <string name="bicicleta">Ruta en bicicleta</string>
+    <string name="caminante">Ruta caminando</string>
+
+
+    <string name="logo_ecorutas">Logo de EcoRutas</string>
+    <string name="correo_electronico">Correo Electrónico</string>
+    <string name="contrasena">Contraseña</string>
+    <string name="iniciar_sesion">Iniciar Sesión</string>
+    <string name="no_tienes_cuenta">¿No tienes una cuenta? Regístrate</string>
+
+
+    <string name="nombre_completo">Nombre </string>
+    <string name="apellido">Apeliido</string>
+    <string name="confirmar_contrasena">Confirmar Contraseña</string>
+    <string name="crear_cuenta">Crear Cuenta</string>
+    <string name="ya_tienes_cuenta">¿Ya tienes cuenta? Inicia Sesión</string>
+    <string name="default_web_client_id">tu_client_id_de_firebase</string>
+
+
+
+    <string name="msg_complete_fields">Completa todos los campos</string>
+    <string name="msg_error">Error: %1$s</string>
+    <string name="msg_user_registered">Usuario registrado</string>
+    <string name="msg_password_mismatch">Las contraseñas no coinciden</string>
+
+
+</resources>

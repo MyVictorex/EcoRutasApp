@@ -1,0 +1,59 @@
+<div class="rutas-container">
+  <h2>🚴‍♀️ Lista de Rutas</h2>
+
+  <!-- Botón para registrar nueva ruta -->
+  <div class="btns-header">
+    <button class="btn-agregar" routerLink="/rutas/nuevo">
+      ➕ Nueva Ruta
+    </button>
+  </div>
+
+  <!-- Cargando -->
+  <div *ngIf="cargando" class="loading">
+    <p>Cargando rutas...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="errorMsg" class="error">
+    <p>{{ errorMsg }}</p>
+  </div>
+
+  <!-- Lista -->
+  <div *ngIf="!cargando && rutas.length > 0" class="rutas-list">
+    <div class="ruta-card" *ngFor="let ruta of rutas">
+      <h3>{{ ruta.nombre }}</h3>
+      <p><strong>Descripción:</strong> {{ ruta.descripcion }}</p>
+      <p><strong>Inicio:</strong> {{ ruta.punto_inicio }}</p>
+      <p><strong>Fin:</strong> {{ ruta.punto_fin }}</p>
+      <p><strong>Distancia:</strong> {{ ruta.distancia_km }} km</p>
+      <p><strong>Tipo:</strong> {{ ruta.tipo }}</p>
+      <p><strong>Estado:</strong> {{ ruta.estado }}</p>
+      <p>
+        <strong>Fecha de creación:</strong>
+        {{ ruta.fecha_creacion ? (ruta.fecha_creacion | date:'short') : 'Sin registrar' }}
+      </p>
+
+      <!-- Botones de acción -->
+      <div class="ruta-actions">
+        <button
+          class="btn-editar"
+          [routerLink]="['/rutas/editar', ruta.id_ruta]"
+        >
+          ✏️ Editar
+        </button>
+
+        <button
+          class="btn-eliminar"
+          (click)="eliminarRuta(ruta.id_ruta)"
+        >
+          🗑️ Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sin datos -->
+  <div *ngIf="!cargando && rutas.length === 0" class="no-data">
+    <p>No hay rutas registradas.</p>
+  </div>
+</div>

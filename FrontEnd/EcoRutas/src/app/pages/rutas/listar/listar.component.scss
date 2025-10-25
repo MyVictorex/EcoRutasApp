@@ -1,0 +1,384 @@
+/* rutas-styles.css */
+/* Estilos responsivos para la página de lista de rutas EcoRutas */
+
+/* Reset y base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #f1f8e9 0%, #e8f5e8 100%);
+  min-height: 100vh;
+  color: #2d3748;
+  line-height: 1.6;
+}
+
+/* Contenedor principal */
+.rutas-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+/* Header */
+.rutas-container h2 {
+  text-align: center;
+  font-size: 1.8rem;
+  color: #1b4332;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  padding: 1rem 0;
+}
+
+/* Botón agregar principal */
+.btns-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.btn-agregar {
+  background: linear-gradient(135deg, #2d6a4f 0%, #40916c 100%);
+  color: white;
+  border: none;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(45, 106, 79, 0.3);
+  transition: all 0.3s ease;
+  width: 100%;
+  max-width: 280px;
+}
+
+.btn-agregar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(45, 106, 79, 0.4);
+}
+
+/* Estados de carga y error */
+.loading, .error, .no-data {
+  text-align: center;
+  padding: 3rem 1rem;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 16px;
+  margin: 2rem 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.loading p, .error p, .no-data p {
+  font-size: 1.1rem;
+  color: #4a5568;
+  margin-top: 1rem;
+}
+
+.error p {
+  color: #d63031;
+}
+
+/* Spinner de carga */
+.loading::before {
+  content: "";
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e8f5e8;
+  border-top: 4px solid #2d6a4f;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Lista de rutas */
+.rutas-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+/* Tarjeta de ruta */
+.ruta-card {
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 16px;
+  border-left: 6px solid #2d6a4f;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.ruta-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #2d6a4f, #40916c);
+  opacity: 0.8;
+}
+
+.ruta-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.ruta-card h3 {
+  color: #1b4332;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e8f5e8;
+}
+
+.ruta-card p {
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+  color: #4a5568;
+}
+
+.ruta-card strong {
+  color: #1b4332;
+  font-weight: 600;
+}
+
+/* Badge para tipo de ruta */
+.ruta-card p:has(strong:contains("Tipo:")) {
+  display: inline-block;
+  background: #e8f5e8;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  margin-right: 0.5rem;
+}
+
+/* Badge para estado */
+.ruta-card p:has(strong:contains("Estado:")) {
+  display: inline-block;
+  background: #fff3cd;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+}
+
+/* Botones de acción */
+.ruta-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e8f5e8;
+  flex-wrap: wrap;
+}
+
+.btn-editar, .btn-eliminar {
+  flex: 1;
+  min-width: 120px;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.btn-editar {
+  background: linear-gradient(135deg, #74c69d 0%, #40916c 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(116, 198, 157, 0.3);
+}
+
+.btn-editar:hover {
+  background: linear-gradient(135deg, #40916c 0%, #2d6a4f 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(116, 198, 157, 0.4);
+}
+
+.btn-eliminar {
+  background: linear-gradient(135deg, #e76f51 0%, #d63031 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(231, 111, 81, 0.3);
+}
+
+.btn-eliminar:hover {
+  background: linear-gradient(135deg, #d63031 0%, #c1121f 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(231, 111, 81, 0.4);
+}
+
+/* Estado sin datos */
+.no-data {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.no-data::before {
+  content: "🌱";
+  font-size: 4rem;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.no-data p {
+  font-size: 1.2rem;
+  color: #4a5568;
+  margin-top: 0.5rem;
+}
+
+/* Media Queries para tablets */
+@media (min-width: 768px) {
+  .rutas-container {
+    padding: 2rem;
+    margin: 2rem auto;
+  }
+
+  .rutas-container h2 {
+    font-size: 2.2rem;
+  }
+
+  .rutas-list {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+
+  .btn-agregar {
+    font-size: 1.1rem;
+    padding: 1.2rem 2rem;
+  }
+
+  .ruta-card {
+    padding: 2rem;
+  }
+
+  .ruta-card h3 {
+    font-size: 1.4rem;
+  }
+
+  .ruta-actions {
+    gap: 1rem;
+  }
+
+  .btn-editar, .btn-eliminar {
+    font-size: 1rem;
+    padding: 0.9rem 1.2rem;
+  }
+}
+
+/* Media Queries para desktop */
+@media (min-width: 1024px) {
+  .rutas-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .ruta-card h3 {
+    font-size: 1.5rem;
+  }
+
+  .ruta-card p {
+    font-size: 1rem;
+  }
+}
+
+/* Media Queries para pantallas grandes */
+@media (min-width: 1440px) {
+  .rutas-container {
+    max-width: 1400px;
+  }
+
+  .rutas-list {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Mejoras de accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+  .ruta-card,
+  .btn-agregar,
+  .btn-editar,
+  .btn-eliminar {
+    transition: none;
+    transform: none;
+  }
+}
+
+/* Modo oscuro opcional */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+    color: #e2e8f0;
+  }
+
+  .rutas-container {
+    background: rgba(45, 55, 72, 0.95);
+    color: #e2e8f0;
+  }
+
+  .ruta-card {
+    background: #2d3748;
+    color: #e2e8f0;
+  }
+
+  .ruta-card h3 {
+    color: #81e6d9;
+  }
+
+  .ruta-card strong {
+    color: #90cdf4;
+  }
+
+  .ruta-card p {
+    color: #cbd5e0;
+  }
+
+  .loading, .error, .no-data {
+    background: rgba(45, 55, 72, 0.9);
+  }
+
+  .loading p, .error p, .no-data p {
+    color: #cbd5e0;
+  }
+}
+
+/* Estados de enfoque para accesibilidad */
+.btn-agregar:focus,
+.btn-editar:focus,
+.btn-eliminar:focus {
+  outline: 3px solid #2d6a4f;
+  outline-offset: 2px;
+}
+
+/* Scroll suave */
+.rutas-list {
+  scroll-behavior: smooth;
+}
+
+/* Mejoras para impresión */
+@media print {
+  .btns-header,
+  .ruta-actions {
+    display: none;
+  }
+
+  .ruta-card {
+    break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+}

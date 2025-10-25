@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoRutas - Transporte Sostenible</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+
+<body>
+  <div class="home-container">
+    <header class="header">
+      <h1 class="logo">🌍 EcoRutas</h1>
+      <p class="tagline">Tu guía hacia el transporte sostenible</p>
+    </header>
+
+    <main class="main-content">
+      <section class="hero-section">
+        <h2 class="hero-title">🌱 Explora las rutas sostenibles</h2>
+        <p class="hero-description">Encuentra transportes ecoamigables cerca de ti 🚲🛴🌿</p>
+      </section>
+
+      <!-- Mapa principal -->
+      <div id="map" class="map-container"></div>
+
+      <!-- Panel de controles móviles -->
+      <div class="mobile-controls">
+        <button class="control-btn" id="location-btn">
+          📍 Mi ubicación
+        </button>
+        <button class="control-btn" id="routes-btn">
+          🚲 Ver rutas
+        </button>
+        <button class="control-btn" id="filter-btn">
+          🔍 Filtros
+        </button>
+      </div>
+
+      <!-- Información rápida -->
+      <section class="quick-info">
+        <div class="info-card">
+          <span class="info-icon">🚲</span>
+          <h3>Bicicletas</h3>
+          <p>Rutas ciclistas seguras</p>
+        </div>
+        <div class="info-card">
+          <span class="info-icon">🛴</span>
+          <h3>Monopatines</h3>
+          <p>Zonas permitidas</p>
+        </div>
+        <div class="info-card">
+          <span class="info-icon">🚶</span>
+          <h3>Caminando</h3>
+          <p>Sendas peatonales</p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>🌎 Juntos por un planeta más verde</p>
+    </footer>
+  </div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+
+    // Inicialización del mapa
+    function initMap() {
+      // Coordenadas por defecto (puedes cambiarlas)
+      const defaultCoords = [40.4168, -3.7038]; // Madrid, España
+
+      // Crear mapa
+      const map = L.map('map').setView(defaultCoords, 13);
+
+      // Capa de tiles (puedes usar diferentes proveedores)
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 19
+      }).addTo(map);
+
+      // Marcador de ejemplo (punto de interés ecológico)
+      const ecoMarker = L.marker(defaultCoords)
+        .addTo(map)
+        .bindPopup(`
+            <div style="text-align: center;">
+                <h3 style="margin: 0 0 8px 0; color: #1b4332;">🌿 Parque Ecológico</h3>
+                <p style="margin: 0 0 12px 0;">Estación de bicicletas disponibles</p>
+                <button onclick="alert('Ruta hacia el parque calculada!')">
+                    🚲 Calcular Ruta
+                </button>
+            </div>
+        `);
+
+      // Geolocalización
+      const locationBtn = document.getElementById('location-btn');
+      locationBtn.addEventListener('click', () => {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const userCoords = [
+                position.coords.latitude,
+                position.coords.longitude
+              ];
+
+              map.setView(userCoords, 15);
+
+              // Marcador de ubicación del usuario
+              L.marker(userCoords)
+                .addTo(map)
+                .bindPopup('¡Estás aquí!')
+                .openPopup();
+            },
+            (error) => {
+              alert('No se pudo obtener tu ubicación. Asegúrate de tener el GPS activado.');
+              console.error('Error de geolocalización:', error);
+            }
+          );
+        } else {
+          alert('La geolocalización no es soportada por tu navegador.');
+        }
+      });
+
+      // Ejemplo de rutas ecológicas
+      const routesBtn = document.getElementById('routes-btn');
+      routesBtn.addEventListener('click', () => {
+        // Simular algunas rutas ecológicas
+        const ecoRoutes = [
+          {
+            name: "Ruta Verde Norte",
+            coords: [[40.42, -3.70], [40.43, -3.71], [40.44, -3.69]]
+          },
+          {
+            name: "Corredor Ecológico Sur",
+            coords: [[40.41, -3.70], [40.40, -3.71], [40.39, -3.72]]
+          }
+        ];
+
+        // Limpiar rutas anteriores
+        map.eachLayer((layer) => {
+          if (layer instanceof L.Polyline) {
+            map.removeLayer(layer);
+          }
+        });
+
+        // Dibujar nuevas rutas
+        ecoRoutes.forEach(route => {
+          L.polyline(route.coords, {
+            color: '#2d6a4f',
+            weight: 4,
+            opacity: 0.7
+          })
+            .addTo(map)
+            .bindPopup(`<strong>${route.name}</strong><br>Ruta sostenible`);
+        });
+
+        alert('Rutas ecológicas mostradas en el mapa');
+      });
+
+      // Filtros (funcionalidad básica)
+      const filterBtn = document.getElementById('filter-btn');
+      filterBtn.addEventListener('click', () => {
+        alert('Próximamente: Filtros para tipos de transporte sostenible');
+      });
+    }
+
+    // Inicializar el mapa cuando la página cargue
+    document.addEventListener('DOMContentLoaded', initMap);
+
+
+  </script>
+</body>
+
+</html>

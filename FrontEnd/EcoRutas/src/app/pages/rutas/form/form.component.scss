@@ -1,0 +1,437 @@
+/* form-rutas-styles.css */
+/* Estilos responsivos para el formulario de rutas EcoRutas */
+
+/* Reset y base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #f1f8e9 0%, #e8f5e8 100%);
+  min-height: 100vh;
+  color: #2d3748;
+  line-height: 1.6;
+  padding: 1rem;
+}
+
+/* Contenedor principal del formulario */
+.form-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+/* Título */
+.form-container h2 {
+  text-align: center;
+  font-size: 1.6rem;
+  color: #1b4332;
+  margin-bottom: 2rem;
+  font-weight: 700;
+  padding-bottom: 1rem;
+  border-bottom: 3px solid #e8f5e8;
+}
+
+/* Formulario */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Grupos de formulario */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Etiquetas */
+label {
+  font-weight: 600;
+  color: #1b4332;
+  font-size: 0.95rem;
+  margin-bottom: 0.25rem;
+}
+
+/* Campos de entrada */
+input[type="text"],
+input[type="number"],
+textarea,
+select {
+  padding: 1rem;
+  border: 2px solid #e8f5e8;
+  border-radius: 12px;
+  font-size: 1rem;
+  background: #ffffff;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: #2d6a4f;
+  box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.1);
+  background: #f7fff7;
+}
+
+/* Textarea específico */
+textarea {
+  resize: vertical;
+  min-height: 100px;
+  line-height: 1.5;
+}
+
+/* Select personalizado */
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%232d6a4f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 16px;
+  padding-right: 3rem;
+}
+
+/* Contenedor de botones */
+.btns {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+/* Botones */
+button {
+  flex: 1;
+  min-width: 140px;
+  padding: 1rem 1.5rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+/* Botón Guardar */
+button[type="submit"] {
+  background: linear-gradient(135deg, #2d6a4f 0%, #40916c 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(45, 106, 79, 0.3);
+}
+
+button[type="submit"]:hover:not(:disabled) {
+  background: linear-gradient(135deg, #40916c 0%, #1b4332 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(45, 106, 79, 0.4);
+}
+
+button[type="submit"]:disabled {
+  background: #a8dadc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  opacity: 0.7;
+}
+
+/* Botón Limpiar */
+button[type="button"] {
+  background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+}
+
+button[type="button"]:hover {
+  background: linear-gradient(135deg, #495057 0%, #343a40 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+}
+
+/* Mensaje de estado */
+.mensaje {
+  text-align: center;
+  padding: 1rem;
+  margin-top: 1.5rem;
+  border-radius: 12px;
+  font-weight: 500;
+  background: #d1e7dd;
+  color: #0f5132;
+  border: 1px solid #badbcc;
+}
+
+.mensaje.error {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+/* Indicador de carga */
+.cargando {
+  opacity: 0.7;
+  position: relative;
+}
+
+.cargando::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  border: 2px solid transparent;
+  border-top: 2px solid #2d6a4f;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Mejoras visuales para opciones del select */
+option {
+  padding: 0.5rem;
+  background: white;
+  color: #2d3748;
+}
+
+/* Placeholders con estilo */
+::placeholder {
+  color: #a0aec0;
+  opacity: 1;
+}
+
+/* Validación visual */
+input:invalid:not(:focus):not(:placeholder-shown),
+textarea:invalid:not(:focus):not(:placeholder-shown),
+select:invalid:not(:focus) {
+  border-color: #e53e3e;
+  background: #fed7d7;
+}
+
+input:valid:not(:focus):not(:placeholder-shown),
+textarea:valid:not(:focus):not(:placeholder-shown),
+select:valid:not(:focus) {
+  border-color: #38a169;
+  background: #f0fff4;
+}
+
+/* Media Queries para tablets */
+@media (min-width: 768px) {
+  body {
+    padding: 2rem;
+  }
+
+  .form-container {
+    padding: 2.5rem;
+    margin: 1rem auto;
+  }
+
+  .form-container h2 {
+    font-size: 2rem;
+    margin-bottom: 2.5rem;
+  }
+
+  form {
+    gap: 2rem;
+  }
+
+  .form-group {
+    gap: 0.75rem;
+  }
+
+  label {
+    font-size: 1rem;
+  }
+
+  input[type="text"],
+  input[type="number"],
+  textarea,
+  select {
+    padding: 1.2rem;
+    font-size: 1.05rem;
+  }
+
+  textarea {
+    min-height: 120px;
+  }
+
+  .btns {
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  button {
+    padding: 1.2rem 2rem;
+    font-size: 1.05rem;
+  }
+}
+
+/* Media Queries para desktop */
+@media (min-width: 1024px) {
+  .form-container {
+    max-width: 700px;
+  }
+
+  .form-container h2 {
+    font-size: 2.2rem;
+  }
+
+  /* Layout de dos columnas para pantallas grandes */
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  .form-group.full-width {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Media Queries para pantallas muy grandes */
+@media (min-width: 1440px) {
+  .form-container {
+    max-width: 800px;
+    padding: 3rem;
+  }
+}
+
+/* Mejoras de accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none;
+    animation: none;
+  }
+
+  button:hover {
+    transform: none;
+  }
+}
+
+/* Modo oscuro */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+    color: #e2e8f0;
+  }
+
+  .form-container {
+    background: rgba(45, 55, 72, 0.95);
+    color: #e2e8f0;
+  }
+
+  label {
+    color: #81e6d9;
+  }
+
+  input[type="text"],
+  input[type="number"],
+  textarea,
+  select {
+    background: #2d3748;
+    border-color: #4a5568;
+    color: #e2e8f0;
+  }
+
+  input[type="text"]:focus,
+  input[type="number"]:focus,
+  textarea:focus,
+  select:focus {
+    background: #1a202c;
+    border-color: #81e6d9;
+    box-shadow: 0 0 0 3px rgba(129, 230, 217, 0.1);
+  }
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2381e6d9' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-color: #2d3748;
+  }
+
+  option {
+    background: #2d3748;
+    color: #e2e8f0;
+  }
+
+  ::placeholder {
+    color: #718096;
+  }
+
+  .mensaje {
+    background: #234e52;
+    color: #81e6d9;
+    border-color: #2d6a4f;
+  }
+
+  .mensaje.error {
+    background: #742a2a;
+    color: #fc8181;
+    border-color: #c53030;
+  }
+}
+
+/* Estados de enfoque para teclado */
+button:focus,
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 3px solid #2d6a4f;
+  outline-offset: 2px;
+}
+
+/* Mejoras para impresión */
+@media print {
+  body {
+    background: white;
+    color: black;
+    padding: 0;
+  }
+
+  .form-container {
+    box-shadow: none;
+    background: white;
+    margin: 0;
+    padding: 1rem;
+  }
+
+  button {
+    display: none;
+  }
+
+  input,
+  textarea,
+  select {
+    border: 1px solid #ccc;
+    background: white;
+  }
+}
+
+/* Iconos para tipos de ruta (opcional) */
+.tipo-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tipo-option::before {
+  font-size: 1.2rem;
+}
+
+.option-BICICLETA::before { content: "🚲"; }
+.option-SCOOTER::before { content: "🛴"; }
+.option-MONOPATIN_ELECTRICO::before { content: "⚡"; }
+.option-SEGWAY::before { content: "🤖"; }
+.option-CARPOOL::before { content: "🚗"; }

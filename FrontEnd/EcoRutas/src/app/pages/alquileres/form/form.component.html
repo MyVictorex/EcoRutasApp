@@ -1,0 +1,55 @@
+<div class="form-container">
+  <h2>{{ editando ? '✏️ Editar Alquiler' : '➕ Nuevo Alquiler' }}</h2>
+
+  <form (ngSubmit)="guardar()">
+    <!-- Usuario -->
+    <label for="usuario">Usuario</label>
+    <select id="usuario" [(ngModel)]="alquiler.usuario.id_usuario" name="usuario" required>
+      <option *ngFor="let u of usuarios" [value]="u.id_usuario">
+        {{ u.nombre }} {{ u.apellido }}
+      </option>
+    </select>
+
+    <!-- Vehículo -->
+    <label for="vehiculo">Vehículo</label>
+    <select id="vehiculo" [(ngModel)]="alquiler.vehiculo.id_vehiculo" name="vehiculo" required>
+      <option *ngFor="let v of vehiculos" [value]="v.id_vehiculo">
+        {{ v.tipo }} - {{ v.codigo_qr }}
+      </option>
+    </select>
+
+    <!-- Ruta -->
+    <label for="ruta">Ruta</label>
+    <select id="ruta" [(ngModel)]="alquiler.ruta.id_ruta" name="ruta" required>
+      <option *ngFor="let r of rutas" [value]="r.id_ruta">
+        {{ r.nombre }}
+      </option>
+    </select>
+
+    <!-- Fecha Fin -->
+    <label for="fecha_fin">Fecha fin</label>
+    <input type="datetime-local" id="fecha_fin" [(ngModel)]="alquiler.fecha_fin" name="fecha_fin" required>
+
+    <!-- Costo -->
+    <label for="costo">Costo (S/)</label>
+    <input type="number" id="costo" [(ngModel)]="alquiler.costo" name="costo" min="0" required>
+
+    <!-- Estado -->
+    <label for="estado">Estado</label>
+    <select id="estado" [(ngModel)]="alquiler.estado" name="estado">
+      <option value="EN_CURSO">En curso</option>
+      <option value="FINALIZADO">Finalizado</option>
+    </select>
+
+    <!-- Botones -->
+    <div class="btns">
+      <button type="submit" [disabled]="cargando">
+        {{ editando ? 'Actualizar' : 'Guardar' }}
+      </button>
+     <button type="button" routerLink="/alquileres">⬅️ Volver al listado</button>
+
+    </div>
+  </form>
+
+  <p class="mensaje" *ngIf="mensaje">{{ mensaje }}</p>
+</div>
