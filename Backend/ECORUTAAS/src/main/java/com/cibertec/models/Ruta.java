@@ -27,7 +27,7 @@ public class Ruta {
     private Tipo tipo;
 
     @Enumerated(EnumType.STRING)
-    private Estado estado = Estado.ACTIVA;
+    private Estado estado = Estado.activa;
 
     private LocalDateTime fecha_creacion = LocalDateTime.now();
 
@@ -45,7 +45,7 @@ public class Ruta {
     private List<HistorialRuta> historialRutas;
 
     public enum Tipo { BICICLETA, SCOOTER, MONOPATIN_ELECTRICO, CARPOOL,SEGWAY }
-    public enum Estado { ACTIVA, INACTIVA }
+    public enum Estado { activa, inactiva }
     @PrePersist
     protected void onCreate() {
         this.fecha_creacion = LocalDateTime.now();

@@ -27,7 +27,7 @@ public class Usuario {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private Rol rol = Rol.USUARIO;
+    private Rol rol = Rol.usuario;
 
     private LocalDateTime fecha_registro = LocalDateTime.now();
 
@@ -54,5 +54,5 @@ public class Usuario {
     private List<Logro> logros;
 
 
-    public enum Rol { USUARIO, ADMIN }
+    public enum Rol { usuario, admin }
 }
