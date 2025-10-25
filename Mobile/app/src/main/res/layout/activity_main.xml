@@ -5,15 +5,143 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#A8E6A3"
     tools:context=".ui.MainActivity">
 
+    <!-- Barra superior -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="#2E7D32"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Contenedor interno para controlar posiciones -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            android:paddingHorizontal="8dp">
+
+            <!-- Ícono menú (izquierda) -->
+            <ImageView
+                android:id="@+id/menuIcon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_menu"
+                android:contentDescription="@string/menu"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <!-- Título (centro) -->
+            <TextView
+                android:id="@+id/toolbarTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_name"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/menuIcon"
+                app:layout_constraintEnd_toStartOf="@id/profileIcon"
+                app:layout_constraintHorizontal_bias="0.5" />
+
+            <!-- Ícono perfil (derecha) -->
+            <ImageView
+                android:id="@+id/profileIcon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_person"
+                android:contentDescription="@string/perfil"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+    <!-- Texto "Mapa de Rutas" -->
     <TextView
+        android:id="@+id/tvMapa"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/mapa_rutas"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp" />
+
+    <!-- Contenedor del mapa -->
+    <FrameLayout
+        android:id="@+id/mapContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#B2DFDB"
+        app:layout_constraintTop_toBottomOf="@id/tvMapa"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="16dp">
+
+        <!-- Ícono bicicleta -->
+        <ImageView
+            android:id="@+id/bikeIcon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="top|start"
+            android:layout_margin="8dp"
+            android:src="@drawable/ic_bike"
+            android:contentDescription="@string/bicicleta" />
+
+        <!-- Ícono caminante -->
+        <ImageView
+            android:id="@+id/walkIcon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="top|end"
+            android:layout_margin="8dp"
+            android:src="@drawable/ic_walk"
+            android:contentDescription="@string/caminante" />
+
+        <!-- Botones flotantes -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:orientation="vertical"
+            android:layout_margin="8dp">
+
+            <ImageButton
+                android:id="@+id/btnAdd"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_add"
+                android:contentDescription="@string/agregar" />
+
+            <ImageButton
+                android:id="@+id/btnLocation"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_location"
+                android:contentDescription="@string/ubicacion" />
+
+            <ImageButton
+                android:id="@+id/btnCompass"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_compass"
+                android:contentDescription="@string/brujula" />
+        </LinearLayout>
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
