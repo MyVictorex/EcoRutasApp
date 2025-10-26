@@ -58,8 +58,11 @@ dependencies {
     implementation(libs.firebase.firestore)
     implementation("com.google.android.gms:play-services-auth:21.2.0")
 
-    implementation(libs.play.services.maps)
-    implementation(libs.play.services.location)
+
+    implementation("com.google.android.gms:play-services-maps:18.1.0")
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+    implementation ("com.google.android.libraries.places:places:3.2.0")
+    implementation("com.google.maps.android:android-maps-utils:2.3.0")
 
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")

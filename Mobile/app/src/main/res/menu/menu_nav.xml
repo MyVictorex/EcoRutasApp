@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_alquiler"
+        android:title="Alquiler"
+        android:icon="@android:drawable/ic_menu_myplaces" />
+
+    <item
+        android:id="@+id/action_rutas"
+        android:title="Rutas"
+        android:icon="@android:drawable/ic_menu_directions" />
+
+    <item
+        android:id="@+id/action_estadisticas"
+        android:title="Estadísticas"
+        android:icon="@android:drawable/ic_menu_sort_by_size" />
+
+    <item
+        android:id="@+id/action_logros"
+        android:title="Logros"
+        android:icon="@android:drawable/ic_menu_agenda" />
+</menu>

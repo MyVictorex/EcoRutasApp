@@ -8,7 +8,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 object ApiClient {
 
     // 🧭 Cambia esto por la IP de tu backend (usa la IP local de tu PC si estás probando en emulador)
+<<<<<<< HEAD
     private const val BASE_URL = "http://192.168.100.43:8080/api/"
+=======
+    private const val BASE_URL = "https://cardiovascular-unhappy-latonya.ngrok-free.dev/api/"
+>>>>>>> 67f5e2f (subiendo Avances)
 
     // 🔍 Interceptor para ver logs de red
     private val loggingInterceptor = HttpLoggingInterceptor().apply {

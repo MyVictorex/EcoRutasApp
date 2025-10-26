@@ -4,7 +4,9 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
-class DbHelper(context: Context) : SQLiteOpenHelper(context, "ecorutas.db", null, 1) {
+
+class DbHelper(context: Context) : SQLiteOpenHelper(context, "ecorutas.db", null, 2) {
+
 
     override fun onCreate(db: SQLiteDatabase) {
 
@@ -19,7 +21,6 @@ class DbHelper(context: Context) : SQLiteOpenHelper(context, "ecorutas.db", null
                 fecha_registro TEXT DEFAULT CURRENT_TIMESTAMP
             )
         """)
-
 
         db.execSQL("""
             CREATE TABLE ruta(
@@ -50,6 +51,7 @@ class DbHelper(context: Context) : SQLiteOpenHelper(context, "ecorutas.db", null
                 longitud REAL
             )
         """)
+
 
 
         db.execSQL("""
@@ -105,6 +107,20 @@ class DbHelper(context: Context) : SQLiteOpenHelper(context, "ecorutas.db", null
                 FOREIGN KEY(id_logro) REFERENCES logro(id_logro)
             )
         """)
+
+
+        // 🔹 AGREGAR ESTA TABLA FALTANTE
+        db.execSQL("""
+            CREATE TABLE estadistica(
+                id_estadistica INTEGER PRIMARY KEY AUTOINCREMENT,
+                fecha TEXT,
+                total_usuarios INTEGER,
+                total_rutas INTEGER,
+                total_alquileres INTEGER,
+                co2_ahorrado REAL
+            )
+        """)
+
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -115,6 +131,9 @@ class DbHelper(context: Context) : SQLiteOpenHelper(context, "ecorutas.db", null
         db.execSQL("DROP TABLE IF EXISTS vehiculo")
         db.execSQL("DROP TABLE IF EXISTS ruta")
         db.execSQL("DROP TABLE IF EXISTS usuario")
+
+        db.execSQL("DROP TABLE IF EXISTS estadistica")
+
         onCreate(db)
     }
 }
