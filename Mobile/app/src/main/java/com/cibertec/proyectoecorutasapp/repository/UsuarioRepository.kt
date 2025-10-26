@@ -123,5 +123,29 @@ class UsuarioRepository(context: Context) {
             }
         })
     }
+    fun obtenerUsuarioPorId(
+        id: Int,
+        onSuccess: (Usuario) -> Unit,
+        onError: (String) -> Unit
+    ) {
+        api.obtenerUsuario(id).enqueue(object : Callback<Usuario> {
+            override fun onResponse(call: Call<Usuario>, response: Response<Usuario>) {
+                if (response.isSuccessful && response.body() != null) {
+                    val usuario = response.body()!!
+                    dao.insertar(usuario)
+                    onSuccess(usuario)
+                } else {
+                    val local = dao.buscarPorId(id)
+                    if (local != null) onSuccess(local)
+                    else onError("Usuario no encontrado")
+                }
+            }
 
+            override fun onFailure(call: Call<Usuario>, t: Throwable) {
+                val local = dao.buscarPorId(id)
+                if (local != null) onSuccess(local)
+                else onError("Error de conexión: ${t.message}")
+            }
+        })
+    }
 }

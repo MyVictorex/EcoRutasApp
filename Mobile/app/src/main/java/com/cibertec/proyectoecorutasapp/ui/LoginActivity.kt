@@ -128,11 +128,14 @@ class LoginActivity : AppCompatActivity() {
         // Enviar la solicitud a la API de login con Google
         usuarioApi.loginGoogle(tokenMap).enqueue(object : Callback<Usuario> {
             override fun onResponse(call: Call<Usuario>, response: Response<Usuario>) {
-                if (response.isSuccessful) {
-                    toast("Bienvenido ${usuario.nombre}")
+                if (response.isSuccessful && response.body() != null) {
+                    val usuarioResp = response.body()!!
+                    guardarUsuarioSesion(usuarioResp)
+                    toast("Bienvenido ${usuarioResp.nombre}")
                     startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                     finish()
-                } else {
+                }
+                else {
                     toast("Error en backend: ${response.code()}")
                 }
             }
@@ -153,4 +156,15 @@ class LoginActivity : AppCompatActivity() {
 
     private fun toast(msg: String) =
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+
+
+    private fun guardarUsuarioSesion(usuario: Usuario) {
+        val prefs = getSharedPreferences("EcoRutasPrefs", MODE_PRIVATE)
+        prefs.edit()
+            .putInt("usuario_id", usuario.id_usuario ?: -1)
+            .putString("usuario_nombre", "${usuario.nombre} ${usuario.apellido ?: ""}")
+            .putString("usuario_correo", usuario.correo)
+            .apply()
+    }
+
 }
