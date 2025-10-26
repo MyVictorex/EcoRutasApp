@@ -32,5 +32,29 @@
     <string name="msg_user_registered">Usuario registrado</string>
     <string name="msg_password_mismatch">Las contraseñas no coinciden</string>
 
+    <!-- Alquiler -->
+    <string name="mis_alquileres">Mis Alquileres</string>
+    <string name="nuevo_alquiler">Nuevo Alquiler</string>
+
+    <string name="rutas_disponibles">Rutas Disponibles</string>
+    <string name="nueva_ruta">Nueva Ruta</string>
+    <string name="ruta_icono">Ícono de ruta</string>
+
+    <string name="perfil_usuario">Perfil del Usuario</string>
+    <string name="editar_perfil">Editar Perfil</string>
+    <string name="cerrar_sesion">Cerrar Sesión</string>
+
+    <string name="mis_logros">Mis Logros</string>
+    <string name="icono_logro">Ícono de logro</string>
+
+    <string name="estadisticas">Estadísticas</string>
+    <string name="resumen_general">Resumen General</string>
+    <string name="co2_ahorrado">CO₂ Ahorrado</string>
+    <string name="km_recorridos">Kilómetros Recorridos</string>
+    <string name="rutas_completadas">Rutas Completadas</string>
+    <string name="icono_co2">Ícono de CO₂</string>
+    <string name="icono_km">Ícono de kilómetros</string>
+    <string name="icono_rutas">Ícono de rutas</string>
+
 
 </resources>

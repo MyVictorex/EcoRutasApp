@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="8dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="4dp"
+    app:strokeColor="#2E7D32"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tvVehiculo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Vehículo: Bicicleta 04"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvEstado"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Estado: Activo"
+            android:textColor="#2E7D32"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tvTiempo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tiempo: 25 min"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tvCosto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Costo: S/ 3.50"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnFinalizar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Alquilar"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            app:backgroundTint="#2E7D32"
+            app:cornerRadius="16dp" />
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

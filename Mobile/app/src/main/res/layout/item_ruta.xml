@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="4dp"
+    app:strokeColor="#2E7D32"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_bike"
+            android:contentDescription="@string/ruta_icono"
+            android:layout_gravity="end" />
+
+
+        <!-- Nombre de la ruta -->
+        <TextView
+            android:id="@+id/tvNombreRuta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ruta Central"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <!-- Tipo de ruta -->
+        <TextView
+            android:id="@+id/tvTipoRuta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tipo: Bicicleta"
+            android:textColor="#2E7D32"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp" />
+
+        <!-- Distancia -->
+        <TextView
+            android:id="@+id/tvDistanciaRuta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Distancia: 8.5 km"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="14sp"
+            android:layout_marginTop="2dp" />
+
+        <!-- Estado -->
+        <TextView
+            android:id="@+id/tvEstadoRuta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Estado: Activa"
+            android:textColor="@android:color/holo_green_dark"
+            android:textSize="14sp"
+            android:layout_marginTop="2dp" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>
