@@ -55,6 +55,15 @@
     <string name="icono_co2">Ícono de CO₂</string>
     <string name="icono_km">Ícono de kilómetros</string>
     <string name="icono_rutas">Ícono de rutas</string>
+    <string name="google_maps_key">AIzaSyAgaBt-YhWFA11DS5kAn-LhExVa1HjPAwk</string>
+
+    <string-array name="modos_transporte">
+        <item>BICICLETA</item>
+        <item>SCOOTER</item>
+        <item>CAMINATA</item>
+        <item>CARPOOL</item>
+    </string-array>
+
 
 
 </resources>

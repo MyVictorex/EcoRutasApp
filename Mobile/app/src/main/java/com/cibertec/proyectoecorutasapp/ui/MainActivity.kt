@@ -3,41 +3,21 @@ package com.cibertec.proyectoecorutasapp.ui
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-<<<<<<< HEAD
-import android.location.Location
-import android.os.Bundle
-import android.widget.ImageView
-import android.widget.PopupMenu
-=======
 import android.graphics.Color
 import android.os.Bundle
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.PopupMenu
-import android.widget.TextView
->>>>>>> 67f5e2f (subiendo Avances)
-import android.widget.Toast
+import android.widget.*
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.app.ActivityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.cibertec.proyectoecorutasapp.R
-<<<<<<< HEAD
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
-=======
 import com.google.android.gms.location.*
->>>>>>> 67f5e2f (subiendo Avances)
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-<<<<<<< HEAD
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
-import com.google.firebase.auth.FirebaseAuth
-=======
 import com.google.android.gms.maps.model.*
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
@@ -50,15 +30,12 @@ import com.google.maps.android.PolyUtil
 import okhttp3.*
 import org.json.JSONObject
 import java.io.IOException
->>>>>>> 67f5e2f (subiendo Avances)
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var googleMap: GoogleMap
-<<<<<<< HEAD
-=======
     private lateinit var locationCallback: LocationCallback
 
     private var origenLocation: LatLng? = null
@@ -69,9 +46,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var tvOrigen: TextView
     private lateinit var tvDestino: TextView
     private lateinit var btnTrazarRuta: Button
+    private lateinit var spnModo: Spinner
 
+    private var modoSeleccionado: String = "driving"
     private val client = OkHttpClient()
->>>>>>> 67f5e2f (subiendo Avances)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,19 +62,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             insets
         }
 
-<<<<<<< HEAD
-        auth = FirebaseAuth.getInstance()
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
-        val profileIcon = findViewById<ImageView>(R.id.profileIcon)
-        profileIcon.setOnClickListener {
-            showProfileMenu(profileIcon)
-        }
-
-=======
         // Inicializar Places
         if (!Places.isInitialized()) {
-            Places.initialize(applicationContext, "AIzaSyAgaBt-YhWFA11DS5kAn-LhExVa1HjPAwk")
+            Places.initialize(applicationContext, getString(R.string.google_maps_key))
         }
 
         auth = FirebaseAuth.getInstance()
@@ -105,19 +73,18 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         tvOrigen = findViewById(R.id.tvOrigen)
         tvDestino = findViewById(R.id.tvDestino)
         btnTrazarRuta = findViewById(R.id.btnTrazarRuta)
+        spnModo = findViewById(R.id.spnModo)
 
-        // 🔹 Íconos del toolbar
         val menuIcon = findViewById<ImageView>(R.id.menuIcon)
         val profileIcon = findViewById<ImageView>(R.id.profileIcon)
 
-        // 🔹 Asignar eventos a los íconos
+        // Menús
         menuIcon.setOnClickListener { showMainMenu(menuIcon) }
         profileIcon.setOnClickListener { showProfileMenu(profileIcon) }
 
-        // 🔹 Autocomplete de destino
-        tvDestino.setOnClickListener { abrirAutocomplete() }
+        setupSpinner()
+        setupDestinoSearch()
 
-        // 🔹 Botón para trazar ruta
         btnTrazarRuta.setOnClickListener {
             if (origenLocation != null && destinoLocation != null) {
                 trazarRuta(origenLocation!!, destinoLocation!!)
@@ -126,54 +93,63 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
 
-        // 🔹 Configurar mapa
->>>>>>> 67f5e2f (subiendo Avances)
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.mapContainer) as SupportMapFragment
         mapFragment.getMapAsync(this)
     }
 
+    private fun setupSpinner() {
+        ArrayAdapter.createFromResource(
+            this,
+            R.array.modos_transporte,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spnModo.adapter = adapter
+        }
+
+        spnModo.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: android.view.View?, position: Int, id: Long) {
+                modoSeleccionado = when (position) {
+                    0 -> "bicycling"
+                    1 -> "driving"
+                    2 -> "walking"
+                    else -> "driving"
+                }
+            }
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
+    }
+
+    private fun setupDestinoSearch() {
+        tvDestino.setOnClickListener { abrirAutocomplete() }
+    }
+
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
         googleMap.uiSettings.isZoomControlsEnabled = true
-<<<<<<< HEAD
-        googleMap.mapType = GoogleMap.MAP_TYPE_NORMAL
 
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1000)
-=======
-
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED
         ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                1000
-            )
->>>>>>> 67f5e2f (subiendo Avances)
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1000)
             return
         }
 
         googleMap.isMyLocationEnabled = true
 
-<<<<<<< HEAD
+        googleMap.setOnMapClickListener { latLng ->
+            destinoLocation = latLng
+            tvDestino.text = "Destino seleccionado en mapa"
+            destinoMarker?.remove()
+            destinoMarker = googleMap.addMarker(
+                MarkerOptions()
+                    .position(latLng)
+                    .title("Destino seleccionado")
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+            )
+        }
 
-        fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-            if (location != null) {
-                val userLatLng = LatLng(location.latitude, location.longitude)
-                googleMap.addMarker(MarkerOptions().position(userLatLng).title("Tu ubicación"))
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 15f))
-            } else {
-
-                val lima = LatLng(-12.0464, -77.0428)
-                googleMap.addMarker(MarkerOptions().position(lima).title("Lima, Perú"))
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lima, 12f))
-=======
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
             if (location != null) {
                 origenLocation = LatLng(location.latitude, location.longitude)
@@ -183,7 +159,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000)
                     .setMaxUpdates(1)
                     .build()
-
                 locationCallback = object : LocationCallback() {
                     override fun onLocationResult(result: LocationResult) {
                         val loc = result.lastLocation ?: return
@@ -193,58 +168,45 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                         fusedLocationClient.removeLocationUpdates(this)
                     }
                 }
-
                 fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, mainLooper)
->>>>>>> 67f5e2f (subiendo Avances)
             }
         }
     }
 
-<<<<<<< HEAD
-    private fun showProfileMenu(anchor: ImageView) {
-        val popup = PopupMenu(this, anchor)
-        popup.menuInflater.inflate(R.menu.menu_perfil, popup.menu)
-
-        popup.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.action_editar -> {
-                    Toast.makeText(this, "Editar perfil (por implementar)", Toast.LENGTH_SHORT).show()
-=======
     private fun abrirAutocomplete() {
         val fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG)
         val bounds = RectangularBounds.newInstance(
             LatLng(-18.35, -81.32), LatLng(-0.03, -68.65)
         )
-
         val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
             .setLocationRestriction(bounds)
             .setCountries(listOf("PE"))
             .build(this)
-
         startActivityForResult(intent, 2)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == RESULT_OK && data != null) {
-            val place = Autocomplete.getPlaceFromIntent(data)
-            destinoLocation = place.latLng
-            tvDestino.text = place.name
+        if (requestCode == 2) {
+            if (resultCode == RESULT_OK && data != null) {
+                val place = Autocomplete.getPlaceFromIntent(data)
+                destinoLocation = place.latLng
+                tvDestino.text = place.name
 
-            destinoMarker?.remove()
-            destinoLocation?.let {
-                destinoMarker = googleMap.addMarker(
-                    MarkerOptions()
-                        .position(it)
-                        .title("Destino: ${place.name}")
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
-                )
-                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(it, 14f))
+                destinoMarker?.remove()
+                destinoLocation?.let {
+                    destinoMarker = googleMap.addMarker(
+                        MarkerOptions()
+                            .position(it)
+                            .title("Destino: ${place.name}")
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                    )
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(it, 14f))
+                }
+            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                val status = Autocomplete.getStatusFromIntent(data!!)
+                Toast.makeText(this, "Error: ${status.statusMessage}", Toast.LENGTH_SHORT).show()
             }
-
-        } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
-            val status = Autocomplete.getStatusFromIntent(data!!)
-            Toast.makeText(this, "Error: ${status.statusMessage}", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -252,24 +214,20 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         val url = "https://maps.googleapis.com/maps/api/directions/json?" +
                 "origin=${origen.latitude},${origen.longitude}" +
                 "&destination=${destino.latitude},${destino.longitude}" +
-                "&key=AIzaSyAgaBt-YhWFA11DS5kAn-LhExVa1HjPAwk"
+                "&mode=$modoSeleccionado" +
+                "&key=${getString(R.string.google_maps_key)}"
 
         val request = Request.Builder().url(url).build()
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                runOnUiThread {
-                    Toast.makeText(this@MainActivity, "Error al obtener ruta", Toast.LENGTH_SHORT).show()
-                }
+                runOnUiThread { Toast.makeText(this@MainActivity, "Error al obtener ruta", Toast.LENGTH_SHORT).show() }
             }
-
             override fun onResponse(call: Call, response: Response) {
                 val body = response.body?.string() ?: return
                 val json = JSONObject(body)
                 val routes = json.getJSONArray("routes")
                 if (routes.length() == 0) {
-                    runOnUiThread {
-                        Toast.makeText(this@MainActivity, "No se encontró ruta", Toast.LENGTH_SHORT).show()
-                    }
+                    runOnUiThread { Toast.makeText(this@MainActivity, "No se encontró ruta", Toast.LENGTH_SHORT).show() }
                     return
                 }
 
@@ -283,7 +241,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                     polyline = googleMap.addPolyline(
                         PolylineOptions().addAll(decodedPath).color(Color.BLUE).width(10f)
                     )
-
                     val builder = LatLngBounds.Builder()
                     decodedPath.forEach { builder.include(it) }
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 100))
@@ -294,12 +251,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onDestroy() {
         super.onDestroy()
-        if (::locationCallback.isInitialized) {
-            fusedLocationClient.removeLocationUpdates(locationCallback)
-        }
+        fusedLocationClient.removeLocationUpdates(locationCallback)
     }
 
-    // 🔹 Menú principal (ícono de hamburguesa)
+    // 🔹 Menú principal (tres rayas)
     private fun showMainMenu(anchor: ImageView) {
         val popup = PopupMenu(this, anchor)
         popup.menuInflater.inflate(R.menu.menu_nav, popup.menu)
@@ -335,7 +290,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             when (item.itemId) {
                 R.id.action_editar -> {
                     startActivity(Intent(this, PerfilActivity::class.java))
->>>>>>> 67f5e2f (subiendo Avances)
                     true
                 }
                 R.id.action_cerrar_sesion -> {
