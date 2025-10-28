@@ -18,10 +18,12 @@
             android:name=".ui.RegistrarActivity"
             android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar"
             android:exported="false" />
+
         <activity
             android:name=".ui.MainActivity"
             android:exported="false"
-        android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar"/>
+            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar"/>
+
         <activity
             android:name=".ui.LoginActivity"
             android:exported="true"
@@ -37,16 +39,25 @@
             android:name=".ui.AlquilerActivity"
             android:exported="false"
             android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
+
         <activity
             android:name=".ui.RutaActivity"
             android:exported="false"
             android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
+
         <activity
             android:name=".ui.EstadisticasActivity"
             android:exported="false"
             android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
+
         <activity
             android:name=".ui.LogrosActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
+
+        <!-- 🔹 AGREGA ESTA -->
+        <activity
+            android:name=".ui.PerfilActivity"
             android:exported="false"
             android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
 

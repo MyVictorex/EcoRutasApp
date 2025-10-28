@@ -5,19 +5,21 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.cibertec.proyectoecorutasapp.databinding.AcitivityPerfilBinding
+import com.cibertec.proyectoecorutasapp.databinding.ActivityPerfilBinding
+
+
 import com.cibertec.proyectoecorutasapp.models.Usuario
 import com.cibertec.proyectoecorutasapp.repository.UsuarioRepository
 
 class PerfilActivity : AppCompatActivity() {
 
-    private lateinit var b: AcitivityPerfilBinding
+    private lateinit var b: ActivityPerfilBinding
     private lateinit var repository: UsuarioRepository
     private var usuarioActual: Usuario? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        b = AcitivityPerfilBinding.inflate(layoutInflater)
+        b = ActivityPerfilBinding.inflate(layoutInflater)
         setContentView(b.root)
 
         repository = UsuarioRepository(this)
