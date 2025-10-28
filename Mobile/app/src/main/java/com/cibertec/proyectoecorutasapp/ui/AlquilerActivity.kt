@@ -36,6 +36,7 @@ class AlquilerActivity : AppCompatActivity() {
     private fun cargarAlquileres() {
         repo.listarAlquileres(
             onSuccess = { lista ->
+                Toast.makeText(this, "Se obtuvieron ${lista.size} alquileres", Toast.LENGTH_SHORT).show()
                 adapter.actualizarLista(lista)
             },
             onError = { error ->
@@ -43,4 +44,5 @@ class AlquilerActivity : AppCompatActivity() {
             }
         )
     }
+
 }
