@@ -90,7 +90,9 @@ class UsuarioRepository(context: Context) {
             }
         })
     }
-
+    fun obtenerUsuarioLocal(id: Int): Usuario? {
+        return dao.buscarPorId(id)
+    }
 
     fun autenticar(
         correo: String,

@@ -6,8 +6,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.cibertec.proyectoecorutasapp.databinding.ActivityPerfilBinding
-
-
 import com.cibertec.proyectoecorutasapp.models.Usuario
 import com.cibertec.proyectoecorutasapp.repository.UsuarioRepository
 
@@ -44,15 +42,16 @@ class PerfilActivity : AppCompatActivity() {
     private fun cargarUsuarioActual() {
         val prefs = getSharedPreferences("EcoRutasPrefs", MODE_PRIVATE)
         val idUsuario = prefs.getInt("usuario_id", -1)
-        val nombre = prefs.getString("usuario_nombre", null)
-        val correo = prefs.getString("usuario_correo", null)
-
-        if (nombre != null && correo != null) {
-            b.tvNombreUsuario.text = nombre
-            b.tvCorreoUsuario.text = correo
-        }
 
         if (idUsuario != -1) {
+            // 🔹 Intentar cargar localmente primero
+            val localUsuario = repository.obtenerUsuarioLocal(idUsuario)
+            if (localUsuario != null) {
+                usuarioActual = localUsuario
+                mostrarUsuario(localUsuario)
+            }
+
+            // 🔹 Luego intentar sincronizar con backend
             repository.obtenerUsuarioPorId(
                 idUsuario,
                 onSuccess = { usuario ->
@@ -60,19 +59,27 @@ class PerfilActivity : AppCompatActivity() {
                     mostrarUsuario(usuario)
                 },
                 onError = {
-                    Toast.makeText(this, "No se pudo cargar el perfil", Toast.LENGTH_SHORT).show()
+                    if (localUsuario == null) {
+                        Toast.makeText(this, "No se pudo cargar el perfil", Toast.LENGTH_SHORT).show()
+                    }
                 }
             )
+        } else {
+            Toast.makeText(this, "No hay sesión activa", Toast.LENGTH_SHORT).show()
         }
     }
 
+
+
+    // --- Mostrar usuario en vistas y EditText
     private fun mostrarUsuario(usuario: Usuario) {
+        // TextViews
         b.tvNombreUsuario.text = "${usuario.nombre} ${usuario.apellido ?: ""}"
         b.tvCorreoUsuario.text = usuario.correo
 
-        // Cargar en campos editables
+        // EditText (rellena aunque no esté en modo edición)
         b.etNombrePerfil.setText(usuario.nombre)
-        b.etApellidoPerfil.setText(usuario.apellido)
+        b.etApellidoPerfil.setText(usuario.apellido ?: "")
         b.etCorreoPerfil.setText(usuario.correo)
         b.etContrasenaPerfil.setText(usuario.password ?: "")
     }
@@ -82,13 +89,22 @@ class PerfilActivity : AppCompatActivity() {
         if (editar) {
             b.layoutDatos.visibility = View.GONE
             b.layoutEdicion.visibility = View.VISIBLE
+
+            // 🔹 Rellenar EditText cada vez que se activa la edición
+            usuarioActual?.let { usuario ->
+                b.etNombrePerfil.setText(usuario.nombre)
+                b.etApellidoPerfil.setText(usuario.apellido ?: "")
+                b.etCorreoPerfil.setText(usuario.correo)
+                b.etContrasenaPerfil.setText(usuario.password ?: "")
+            }
+
         } else {
             b.layoutDatos.visibility = View.VISIBLE
             b.layoutEdicion.visibility = View.GONE
         }
     }
 
-    // --- Guardar cambios en el backend y local
+    // --- Guardar cambios en backend y local
     private fun guardarCambios() {
         val usuario = usuarioActual?.copy(
             nombre = b.etNombrePerfil.text.toString(),
@@ -101,6 +117,7 @@ class PerfilActivity : AppCompatActivity() {
             usuario,
             onSuccess = {
                 Toast.makeText(this, "Perfil actualizado ✅", Toast.LENGTH_SHORT).show()
+                usuarioActual = usuario
                 mostrarModoEdicion(false)
                 mostrarUsuario(usuario)
             },

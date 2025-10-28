@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.cibertec.proyectoecorutasapp.R
 import com.cibertec.proyectoecorutasapp.api.ApiClient
 import com.cibertec.proyectoecorutasapp.api.UsuarioApi
+import com.cibertec.proyectoecorutasapp.data.dao.UsuarioDao
 import com.cibertec.proyectoecorutasapp.databinding.ActivityRegistrarBinding
 import com.cibertec.proyectoecorutasapp.models.Usuario
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -24,6 +25,7 @@ class RegistrarActivity : AppCompatActivity() {
     private lateinit var b: ActivityRegistrarBinding
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
+    private lateinit var usuarioDao: UsuarioDao
     private val usuarioApi = ApiClient.create(UsuarioApi::class.java)
 
     private val RC_SIGN_IN = 1001
@@ -34,23 +36,24 @@ class RegistrarActivity : AppCompatActivity() {
         setContentView(b.root)
 
         auth = FirebaseAuth.getInstance()
+        usuarioDao = UsuarioDao(this)
 
+        // Configuración Google Sign-In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
-
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
         // 👉 Botón de registro manual
         b.btnCrearCuenta.setOnClickListener {
             val nombre = b.etNombreCompleto.text.toString().trim()
-            val apellido = b.etApellido.text.toString().trim()  // Obtener el apellido
+            val apellido = b.etApellido.text.toString().trim()
             val email = b.etCorreo.text.toString().trim()
             val pass = b.etContrasena.text.toString().trim()
             val confirmar = b.etConfirmarContrasena.text.toString().trim()
 
-            if (email.isEmpty() || pass.isEmpty() || confirmar.isEmpty() || nombre.isEmpty() || apellido.isEmpty()) {
+            if (nombre.isEmpty() || apellido.isEmpty() || email.isEmpty() || pass.isEmpty() || confirmar.isEmpty()) {
                 toast(getString(R.string.msg_complete_fields))
                 return@setOnClickListener
             }
@@ -60,10 +63,8 @@ class RegistrarActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // Crear usuario con nombre y apellido
             auth.createUserWithEmailAndPassword(email, pass)
                 .addOnSuccessListener {
-
                     val nuevoUsuario = Usuario(
                         id_usuario = null,
                         nombre = nombre,
@@ -73,7 +74,6 @@ class RegistrarActivity : AppCompatActivity() {
                         rol = Usuario.Rol.usuario,
                         fecha_registro = null
                     )
-
                     registrarEnBackend(nuevoUsuario)
                 }
                 .addOnFailureListener {
@@ -81,17 +81,23 @@ class RegistrarActivity : AppCompatActivity() {
                 }
         }
 
-        // 👉 Registro con Google
+        // 👉 Botón de registro con Google
         b.btnGoogle.setOnClickListener {
             val signInIntent = googleSignInClient.signInIntent
             startActivityForResult(signInIntent, RC_SIGN_IN)
         }
     }
 
+    // Función para registrar en backend y SQLite
     private fun registrarEnBackend(usuario: Usuario) {
         usuarioApi.registrarUsuario(usuario).enqueue(object : Callback<Usuario> {
             override fun onResponse(call: Call<Usuario>, response: Response<Usuario>) {
                 if (response.isSuccessful) {
+                    val usuarioRegistrado = response.body()
+                    if (usuarioRegistrado != null) {
+                        // Guardar en SQLite
+                        usuarioDao.insertar(usuarioRegistrado)
+                    }
                     toast(getString(R.string.msg_user_registered))
                     startActivity(Intent(this@RegistrarActivity, LoginActivity::class.java))
                     finish()
@@ -101,11 +107,16 @@ class RegistrarActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<Usuario>, t: Throwable) {
-                toast("Error de red: ${t.message}")
+                // Guardar localmente aunque haya fallo de red
+                usuarioDao.insertar(usuario)
+                toast("Error de red, usuario guardado localmente: ${t.message}")
+                startActivity(Intent(this@RegistrarActivity, LoginActivity::class.java))
+                finish()
             }
         })
     }
 
+    // Manejo del login de Google
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
