@@ -57,12 +57,17 @@
     <string name="icono_rutas">Ícono de rutas</string>
     <string name="google_maps_key">AIzaSyAgaBt-YhWFA11DS5kAn-LhExVa1HjPAwk</string>
 
+    <string name="select_transport_mode">Seleccionar modo de transporte</string>
+
+
     <string-array name="modos_transporte">
         <item>BICICLETA</item>
         <item>SCOOTER</item>
-        <item>CAMINATA</item>
         <item>CARPOOL</item>
+        <item>MONOPATIN_ELECTRICO</item>
+        <item>SEGWAY</item>
     </string-array>
+
 
 
 

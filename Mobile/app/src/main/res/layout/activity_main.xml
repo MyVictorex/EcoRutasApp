@@ -73,7 +73,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- 🔹 Contenedor direcciones -->
     <LinearLayout
         android:id="@+id/direccionesLayout"
         android:layout_width="0dp"
@@ -115,7 +114,22 @@
             android:layout_marginTop="6dp"
             android:backgroundTint="#2E7D32"
             android:textColor="@android:color/white" />
+
+        <!-- 🕒 Nuevo: texto del tiempo estimado -->
+        <TextView
+            android:id="@+id/tvTiempoEstimado"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tiempo estimado: --"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            android:layout_marginTop="6dp"
+            android:padding="6dp"
+            android:background="#E8F5E9"
+            android:gravity="center_horizontal" />
+
     </LinearLayout>
+
 
     <FrameLayout
         android:id="@+id/autocompleteContainer"
@@ -132,18 +146,23 @@
 
 
     <!-- 🔹 Spinner con restricciones añadidas -->
+    <!-- 🔹 Spinner con diseño mejorado -->
     <Spinner
         android:id="@+id/spnModo"
-        android:layout_width="378dp"
+        android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="8dp"
-        android:background="@color/white"
-        android:entries="@array/modos_transporte"
-        android:padding="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="12dp"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="8dp"
+        android:background="@drawable/spinner_background"
+        android:spinnerMode="dropdown"
+        app:layout_constraintTop_toBottomOf="@id/direccionesLayout"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/direccionesLayout" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:prompt="@string/select_transport_mode"
+        android:entries="@array/modos_transporte" />
+
 
     <!-- 🔹 Fragmento del mapa -->
     <fragment

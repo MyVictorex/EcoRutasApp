@@ -36,7 +36,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var auth: FirebaseAuth
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var googleMap: GoogleMap
-    private lateinit var locationCallback: LocationCallback
 
     private var origenLocation: LatLng? = null
     private var destinoLocation: LatLng? = null
@@ -45,11 +44,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var tvOrigen: TextView
     private lateinit var tvDestino: TextView
+    private lateinit var tvTiempoEstimado: TextView
     private lateinit var btnTrazarRuta: Button
     private lateinit var spnModo: Spinner
 
     private var modoSeleccionado: String = "driving"
     private val client = OkHttpClient()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,13 +73,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
         tvOrigen = findViewById(R.id.tvOrigen)
         tvDestino = findViewById(R.id.tvDestino)
+        tvTiempoEstimado = findViewById(R.id.tvTiempoEstimado)
         btnTrazarRuta = findViewById(R.id.btnTrazarRuta)
         spnModo = findViewById(R.id.spnModo)
 
         val menuIcon = findViewById<ImageView>(R.id.menuIcon)
         val profileIcon = findViewById<ImageView>(R.id.profileIcon)
 
-        // Menús
         menuIcon.setOnClickListener { showMainMenu(menuIcon) }
         profileIcon.setOnClickListener { showProfileMenu(profileIcon) }
 
@@ -98,6 +99,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
     }
 
+    // Configura el Spinner de modos de transporte
     private fun setupSpinner() {
         ArrayAdapter.createFromResource(
             this,
@@ -113,10 +115,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 modoSeleccionado = when (position) {
                     0 -> "bicycling"
                     1 -> "driving"
-                    2 -> "walking"
+                    2 -> "driving"
+                    3 -> "bicycling"
+                    4 -> "walking"
                     else -> "driving"
                 }
             }
+
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
     }
@@ -129,47 +134,121 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         googleMap = map
         googleMap.uiSettings.isZoomControlsEnabled = true
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED
+        // --- Marcadores EcoRent cerca de Cibertec, Plaza Bolognesi y Wilson ---
+        val ecoRent1 = LatLng(-12.0657, -77.0375) // Frente a Cibertec
+        val ecoRent2 = LatLng(-12.0605, -77.0416) // Plaza Bolognesi
+        val ecoRent3 = LatLng(-12.0565, -77.0370) // Av. Wilson
+        val ecoRent4 = LatLng(-12.0630, -77.0350) // Av. Arequipa
+        val ecoRent5 = LatLng(-12.0580, -77.0390) // Cerca Av. Guzmán Blanco
+
+        googleMap.addMarker(
+            MarkerOptions()
+                .position(ecoRent1)
+                .title("EcoRent - Sede Cibertec")
+                .snippet("Alquiler de bicicletas y scooters")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+        )
+        googleMap.addMarker(
+            MarkerOptions()
+                .position(ecoRent2)
+                .title("EcoRent - Plaza Bolognesi")
+                .snippet("Punto de alquiler y recarga")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+        )
+        googleMap.addMarker(
+            MarkerOptions()
+                .position(ecoRent3)
+                .title("EcoRent - Av. Wilson")
+                .snippet("Bicicletas eléctricas disponibles")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+        )
+        googleMap.addMarker(
+            MarkerOptions()
+                .position(ecoRent4)
+                .title("EcoRent - Av. Arequipa")
+                .snippet("Scooters eléctricos disponibles")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+        )
+        googleMap.addMarker(
+            MarkerOptions()
+                .position(ecoRent5)
+                .title("EcoRent - Guzmán Blanco")
+                .snippet("Punto rápido de alquiler")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+        )
+
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ecoRent1, 14f))
+
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
         ) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1000)
-            return
-        }
-
-        googleMap.isMyLocationEnabled = true
-
-        googleMap.setOnMapClickListener { latLng ->
-            destinoLocation = latLng
-            tvDestino.text = "Destino seleccionado en mapa"
-            destinoMarker?.remove()
-            destinoMarker = googleMap.addMarker(
-                MarkerOptions()
-                    .position(latLng)
-                    .title("Destino seleccionado")
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                100
             )
+        } else {
+            mostrarUbicacionUsuario()
         }
+    }
 
-        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-            if (location != null) {
-                origenLocation = LatLng(location.latitude, location.longitude)
-                tvOrigen.text = "Ubicación actual obtenida"
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(origenLocation!!, 15f))
-            } else {
-                val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000)
-                    .setMaxUpdates(1)
-                    .build()
-                locationCallback = object : LocationCallback() {
-                    override fun onLocationResult(result: LocationResult) {
-                        val loc = result.lastLocation ?: return
-                        origenLocation = LatLng(loc.latitude, loc.longitude)
+    private fun mostrarUbicacionUsuario() {
+        try {
+            // Verificar permisos antes de activar la ubicación
+            if (ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    ),
+                    100
+                )
+                return
+            }
+
+            googleMap.isMyLocationEnabled = true
+
+            fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
+                .addOnSuccessListener { location ->
+                    if (location != null) {
+                        origenLocation = LatLng(location.latitude, location.longitude)
                         tvOrigen.text = "Ubicación actual obtenida"
                         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(origenLocation!!, 15f))
-                        fusedLocationClient.removeLocationUpdates(this)
+                    } else {
+                        Toast.makeText(this, "No se pudo obtener la ubicación actual", Toast.LENGTH_SHORT).show()
                     }
                 }
-                fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, mainLooper)
-            }
+
+        } catch (e: SecurityException) {
+            // Captura cualquier error de seguridad si el permiso fue revocado mientras tanto
+            e.printStackTrace()
+            Toast.makeText(this, "Permiso de ubicación no disponible", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 100 &&
+            grantResults.isNotEmpty() &&
+            grantResults[0] == PackageManager.PERMISSION_GRANTED
+        ) {
+            mostrarUbicacionUsuario()
         }
     }
 
@@ -220,27 +299,42 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         val request = Request.Builder().url(url).build()
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                runOnUiThread { Toast.makeText(this@MainActivity, "Error al obtener ruta", Toast.LENGTH_SHORT).show() }
+                runOnUiThread {
+                    Toast.makeText(this@MainActivity, "Error al obtener ruta", Toast.LENGTH_SHORT).show()
+                    tvTiempoEstimado.text = "Tiempo estimado: --"
+                }
             }
+
             override fun onResponse(call: Call, response: Response) {
                 val body = response.body?.string() ?: return
                 val json = JSONObject(body)
                 val routes = json.getJSONArray("routes")
+
                 if (routes.length() == 0) {
-                    runOnUiThread { Toast.makeText(this@MainActivity, "No se encontró ruta", Toast.LENGTH_SHORT).show() }
+                    runOnUiThread {
+                        Toast.makeText(this@MainActivity, "No se encontró ruta", Toast.LENGTH_SHORT).show()
+                        tvTiempoEstimado.text = "Tiempo estimado: --"
+                    }
                     return
                 }
 
-                val points = routes.getJSONObject(0)
-                    .getJSONObject("overview_polyline")
-                    .getString("points")
+                val route = routes.getJSONObject(0)
+                val overview = route.getJSONObject("overview_polyline").getString("points")
+                val decodedPath = PolyUtil.decode(overview)
 
-                val decodedPath = PolyUtil.decode(points)
+                val legs = route.getJSONArray("legs")
+                val durationText = legs.getJSONObject(0)
+                    .getJSONObject("duration")
+                    .getString("text")
+
                 runOnUiThread {
                     polyline?.remove()
                     polyline = googleMap.addPolyline(
                         PolylineOptions().addAll(decodedPath).color(Color.BLUE).width(10f)
                     )
+
+                    tvTiempoEstimado.text = "Tiempo estimado: $durationText"
+
                     val builder = LatLngBounds.Builder()
                     decodedPath.forEach { builder.include(it) }
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 100))
@@ -249,12 +343,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         })
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        fusedLocationClient.removeLocationUpdates(locationCallback)
-    }
-
-    // 🔹 Menú principal (tres rayas)
     private fun showMainMenu(anchor: ImageView) {
         val popup = PopupMenu(this, anchor)
         popup.menuInflater.inflate(R.menu.menu_nav, popup.menu)
@@ -282,7 +370,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         popup.show()
     }
 
-    // 🔹 Menú de perfil
     private fun showProfileMenu(anchor: ImageView) {
         val popup = PopupMenu(this, anchor)
         popup.menuInflater.inflate(R.menu.menu_perfil, popup.menu)

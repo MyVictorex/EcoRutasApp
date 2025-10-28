@@ -34,8 +34,16 @@ public class SecurityConfig {
                 .requestMatchers(
                     "/api/usuarios/login",
                     "/api/usuarios",
-                    "/api/usuarios/**",   // 👈 permite registrar y editar usuarios libremente (opcional)
-                    "/api/registro"
+                    "/api/usuarios/**",
+                    "/api/registro",
+                    "/api/alquileres",
+                    "/api/alquileres/**",
+                    "/api/rutas",
+                    "/api/rutas/**",
+                    "/api/estadisticas",
+                    "/api/estadisticas/**",
+                    "/api/logros",       // ✅ Permite listar logros
+                    "/api/logros/**"     // ✅ Permite insertar y actualizar logros
                 ).permitAll()
                 // Todo lo demás requiere autenticación
                 .anyRequest().authenticated()
@@ -55,9 +63,8 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // 👇 Esto permite cualquier origen, útil si usas ngrok o acceso desde móviles
+        // Permitir cualquier origen (útil para frontend o pruebas con ngrok)
         config.addAllowedOriginPattern("*");
-
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
