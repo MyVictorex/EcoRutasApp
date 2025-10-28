@@ -10,6 +10,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.cibertec.proyectoecorutasapp.R
@@ -51,6 +52,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private var modoSeleccionado: String = "driving"
     private val client = OkHttpClient()
 
+    // 🟢 Seguimiento en tiempo real
+    private var recorridoPolyline: Polyline? = null
+    private var rutaCompleta: List<LatLng> = emptyList()
+    private val LOCATION_PERMISSION_REQUEST_CODE = 100
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,7 +68,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             insets
         }
 
-        // Inicializar Places
         if (!Places.isInitialized()) {
             Places.initialize(applicationContext, getString(R.string.google_maps_key))
         }
@@ -99,7 +103,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
     }
 
-    // Configura el Spinner de modos de transporte
     private fun setupSpinner() {
         ArrayAdapter.createFromResource(
             this,
@@ -111,7 +114,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         spnModo.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: android.view.View?, position: Int, id: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>, view: android.view.View?, position: Int, id: Long
+            ) {
                 modoSeleccionado = when (position) {
                     0 -> "bicycling"
                     1 -> "driving"
@@ -134,86 +139,66 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         googleMap = map
         googleMap.uiSettings.isZoomControlsEnabled = true
 
-        // --- Marcadores EcoRent cerca de Cibertec, Plaza Bolognesi y Wilson ---
-        val ecoRent1 = LatLng(-12.0657, -77.0375) // Frente a Cibertec
-        val ecoRent2 = LatLng(-12.0605, -77.0416) // Plaza Bolognesi
-        val ecoRent3 = LatLng(-12.0565, -77.0370) // Av. Wilson
-        val ecoRent4 = LatLng(-12.0630, -77.0350) // Av. Arequipa
-        val ecoRent5 = LatLng(-12.0580, -77.0390) // Cerca Av. Guzmán Blanco
+        val ecoRents = listOf(
+            LatLng(-12.0657, -77.0375),
+            LatLng(-12.0605, -77.0416),
+            LatLng(-12.0565, -77.0370),
+            LatLng(-12.0630, -77.0350),
+            LatLng(-12.0580, -77.0390)
+        )
+        val nombres = listOf("Cibertec", "Plaza Bolognesi", "Av. Wilson", "Av. Arequipa", "Guzmán Blanco")
 
-        googleMap.addMarker(
-            MarkerOptions()
-                .position(ecoRent1)
-                .title("EcoRent - Sede Cibertec")
-                .snippet("Alquiler de bicicletas y scooters")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-        )
-        googleMap.addMarker(
-            MarkerOptions()
-                .position(ecoRent2)
-                .title("EcoRent - Plaza Bolognesi")
-                .snippet("Punto de alquiler y recarga")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-        )
-        googleMap.addMarker(
-            MarkerOptions()
-                .position(ecoRent3)
-                .title("EcoRent - Av. Wilson")
-                .snippet("Bicicletas eléctricas disponibles")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-        )
-        googleMap.addMarker(
-            MarkerOptions()
-                .position(ecoRent4)
-                .title("EcoRent - Av. Arequipa")
-                .snippet("Scooters eléctricos disponibles")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-        )
-        googleMap.addMarker(
-            MarkerOptions()
-                .position(ecoRent5)
-                .title("EcoRent - Guzmán Blanco")
-                .snippet("Punto rápido de alquiler")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-        )
-
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ecoRent1, 14f))
-
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                100
+        ecoRents.forEachIndexed { i, loc ->
+            googleMap.addMarker(
+                MarkerOptions()
+                    .position(loc)
+                    .title("EcoRent - ${nombres[i]}")
+                    .snippet("Punto de alquiler y recarga")
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
             )
-        } else {
-            mostrarUbicacionUsuario()
         }
+
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ecoRents[0], 14f))
+
+        if (tienePermisosUbicacion()) {
+            mostrarUbicacionUsuario()
+        } else {
+            solicitarPermisosUbicacion()
+        }
+
+        // --- NUEVO: Permitir seleccionar destino con clic en el mapa ---
+        googleMap.setOnMapClickListener { latLng ->
+            destinoLocation = latLng
+            destinoMarker?.remove()
+            destinoMarker = googleMap.addMarker(
+                MarkerOptions()
+                    .position(latLng)
+                    .title("Destino seleccionado")
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+            )
+            tvDestino.text = "Destino: ${latLng.latitude}, ${latLng.longitude}"
+        }
+    }
+
+    private fun tienePermisosUbicacion(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun solicitarPermisosUbicacion() {
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+            LOCATION_PERMISSION_REQUEST_CODE
+        )
     }
 
     private fun mostrarUbicacionUsuario() {
         try {
-            // Verificar permisos antes de activar la ubicación
-            if (ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION
-                    ),
-                    100
-                )
+            if (!tienePermisosUbicacion()) {
+                solicitarPermisosUbicacion()
                 return
             }
 
@@ -231,12 +216,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
 
         } catch (e: SecurityException) {
-            // Captura cualquier error de seguridad si el permiso fue revocado mientras tanto
             e.printStackTrace()
             Toast.makeText(this, "Permiso de ubicación no disponible", Toast.LENGTH_SHORT).show()
         }
     }
-
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -244,11 +227,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == 100 &&
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE &&
             grantResults.isNotEmpty() &&
             grantResults[0] == PackageManager.PERMISSION_GRANTED
         ) {
             mostrarUbicacionUsuario()
+        } else {
+            Toast.makeText(this, "Permiso de ubicación denegado", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -321,6 +306,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 val route = routes.getJSONObject(0)
                 val overview = route.getJSONObject("overview_polyline").getString("points")
                 val decodedPath = PolyUtil.decode(overview)
+                rutaCompleta = decodedPath
 
                 val legs = route.getJSONArray("legs")
                 val durationText = legs.getJSONObject(0)
@@ -338,9 +324,59 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                     val builder = LatLngBounds.Builder()
                     decodedPath.forEach { builder.include(it) }
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 100))
+
+                    iniciarSeguimientoRuta()
                 }
             }
         })
+    }
+
+    private fun iniciarSeguimientoRuta() {
+        if (!tienePermisosUbicacion()) return
+
+        val locationRequest = LocationRequest.Builder(
+            Priority.PRIORITY_HIGH_ACCURACY, 3000L
+        ).build()
+
+        try {
+            fusedLocationClient.requestLocationUpdates(locationRequest, object : LocationCallback() {
+                override fun onLocationResult(locationResult: LocationResult) {
+                    super.onLocationResult(locationResult)
+                    val location = locationResult.lastLocation ?: return
+                    val userLatLng = LatLng(location.latitude, location.longitude)
+                    actualizarProgresoRuta(userLatLng)
+                }
+            }, mainLooper)
+        } catch (e: SecurityException) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun actualizarProgresoRuta(ubicacionActual: LatLng) {
+        if (rutaCompleta.isEmpty()) return
+
+        val puntoCercano = rutaCompleta.minByOrNull { punto ->
+            val results = FloatArray(1)
+            android.location.Location.distanceBetween(
+                ubicacionActual.latitude, ubicacionActual.longitude,
+                punto.latitude, punto.longitude,
+                results
+            )
+            results[0]
+        } ?: return
+
+        val index = rutaCompleta.indexOf(puntoCercano)
+        if (index <= 0) return
+
+        val recorrido = rutaCompleta.subList(0, index)
+
+        recorridoPolyline?.remove()
+        recorridoPolyline = googleMap.addPolyline(
+            PolylineOptions()
+                .addAll(recorrido)
+                .color(Color.GREEN)
+                .width(10f)
+        )
     }
 
     private fun showMainMenu(anchor: ImageView) {
