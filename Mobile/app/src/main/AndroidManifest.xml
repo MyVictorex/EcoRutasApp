@@ -15,12 +15,6 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher_round">
         <activity
-            android:name=".ui.Adapter.ItemVehiculoAdapter"
-            android:exported="false" />
-        <activity
-            android:name=".ui.SeleccionarVehiculoActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.HistorialRutaActivity"
             android:exported="false"
             android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
@@ -41,7 +35,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- 🔹 NUEVAS ACTIVIDADES DEL MENÚ PRINCIPAL -->
+        </activity>
         <activity
             android:name=".ui.AlquilerActivity"
             android:exported="false"
@@ -57,11 +51,25 @@
         <activity
             android:name=".ui.LogrosActivity"
             android:exported="false"
-            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" /> <!-- 🔹 AGREGA ESTA -->
+            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
         <activity
             android:name=".ui.PerfilActivity"
             android:exported="false"
-            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" /> <!-- 🔹 Google Maps API Key -->
+            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
+
+        <activity
+            android:name=".ui.QrRutaActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
+
+        <activity
+            android:name=".ui.CaptureActivityLandscape"
+            android:screenOrientation="landscape"
+            android:stateNotNeeded="true"
+            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar"
+            android:exported="false" />
+
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAgaBt-YhWFA11DS5kAn-LhExVa1HjPAwk" />

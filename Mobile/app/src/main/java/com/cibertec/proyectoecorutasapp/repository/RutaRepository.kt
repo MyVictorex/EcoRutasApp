@@ -22,7 +22,7 @@ class RutaRepository(context: Context) {
             override fun onResponse(call: Call<List<Ruta>>, response: Response<List<Ruta>>) {
                 if (response.isSuccessful) {
                     val lista = response.body() ?: emptyList()
-                    lista.forEach { dao.insertar(it) } // sincroniza localmente
+                    lista.forEach { dao.insertar(it) }
                     onSuccess(lista)
                 } else {
                     onSuccess(dao.listar())

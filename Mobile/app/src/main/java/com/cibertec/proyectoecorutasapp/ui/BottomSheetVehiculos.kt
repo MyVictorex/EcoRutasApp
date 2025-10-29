@@ -1,6 +1,6 @@
 package com.cibertec.proyectoecorutasapp.ui.bottomsheet
 
-import android.app.Dialog
+
 import android.os.Bundle
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import android.view.LayoutInflater
@@ -12,7 +12,7 @@ import com.cibertec.proyectoecorutasapp.models.Vehiculo
 import com.cibertec.proyectoecorutasapp.repository.VehiculoRepository
 import com.cibertec.proyectoecorutasapp.ui.Adapter.ItemVehiculoAdapter
 
-class BottomSheetVehiculos(
+class BottomSheetVehiculos (
     private val onVehiculoSeleccionado: (Vehiculo) -> Unit
 ) : BottomSheetDialogFragment() {
 

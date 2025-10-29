@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
+import android.view.View
 import android.widget.*
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -105,7 +106,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
             trazarRuta(origenLocation!!, destinoLocation!!)
         }
-
     }
 
     // ✅ PERMISOS
@@ -139,7 +139,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-
+    // ✅ MOSTRAR UBICACIÓN ACTUAL
     private fun mostrarUbicacionUsuario() {
         if (!tienePermisosUbicacion()) {
             solicitarPermisosUbicacion()
@@ -155,7 +155,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 .setMaxUpdates(1)
                 .build()
 
-            // Primer intento (rápido)
             fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
                 .addOnSuccessListener { location ->
                     if (location != null) {
@@ -163,7 +162,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                         tvOrigen.text = "Ubicación actual obtenida"
                         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(origenLocation!!, 16f))
                     } else {
-                        // Segundo intento (forzado en tiempo real)
                         fusedLocationClient.requestLocationUpdates(locationRequest, object : LocationCallback() {
                             override fun onLocationResult(result: LocationResult) {
                                 val loc = result.lastLocation ?: return
@@ -181,7 +179,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-
     // ✅ MAPA LISTO
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
@@ -192,7 +189,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
         googleMap.setOnMapClickListener { latLng ->
             destinoLocation = latLng
-
             destinoMarker?.remove()
             destinoMarker = googleMap.addMarker(
                 MarkerOptions()
@@ -200,10 +196,53 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                     .title("Destino seleccionado")
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
             )
-
             tvDestino.text = "Destino: ${latLng.latitude}, ${latLng.longitude}"
         }
 
+        // 🔹 Verificar si viene desde un QR
+        val qrInicio = intent.getStringExtra("qr_inicio")
+        val qrFin = intent.getStringExtra("qr_fin")
+        val qrNombre = intent.getStringExtra("qr_nombre")
+
+        if (qrInicio != null && qrFin != null) {
+            obtenerUbicacionActual { miUbicacion ->
+                val destino = qrFin.split(",")
+                val latFin = destino[0].toDouble()
+                val lonFin = destino[1].toDouble()
+
+                trazarRuta(
+                    LatLng(miUbicacion.latitude, miUbicacion.longitude),
+                    LatLng(latFin, lonFin)
+                )
+
+                Toast.makeText(
+                    this,
+                    "Ruta hacia ${qrNombre ?: "Destino"} iniciada desde tu ubicación 🚴‍♂️",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+    }
+
+    // ✅ OBTENER UBICACIÓN ACTUAL CON CALLBACK
+    private fun obtenerUbicacionActual(callback: (android.location.Location) -> Unit) {
+        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                1001
+            )
+            return
+        }
+
+        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+            location?.let { callback(it) }
+        }
     }
 
     // ✅ AUTOCOMPLETE
@@ -227,38 +266,89 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun setupSpinner() {
         ArrayAdapter.createFromResource(
             this, R.array.modos_transporte, android.R.layout.simple_spinner_item
-        ).also { a ->
-            a.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            spnModo.adapter = a
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spnModo.adapter = adapter
+        }
+
+        spnModo.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                modoSeleccionado = when (position) {
+                    0 -> "bicycling"   // BICICLETA 🚴‍♂️
+                    1 -> "driving"   // SCOOTER usa el mismo modo que bicicleta
+                    2 -> "driving"     // CARPOOL usa modo auto
+                    3 -> "bicycling"   // MONOPATÍN ELÉCTRICO similar a bici
+                    4 -> "walking"     // SEGWAY lo tratamos como caminando
+                    else -> "bicycling"
+                }
+            }
+            override fun onNothingSelected(parent: AdapterView<*>) {}
         }
     }
 
+
     // ✅ TRAZAR RUTA Y CREAR EN BD
+    // ✅ TRAZAR RUTA Y CREAR EN BD (Versión segura)
     private fun trazarRuta(origen: LatLng, destino: LatLng) {
-        val url = "https://maps.googleapis.com/maps/api/directions/json?origin=${origen.latitude},${origen.longitude}&destination=${destino.latitude},${destino.longitude}&mode=$modoSeleccionado&key=${getString(R.string.google_maps_key)}"
+        val url =
+            "https://maps.googleapis.com/maps/api/directions/json?" +
+                    "origin=${origen.latitude},${origen.longitude}" +
+                    "&destination=${destino.latitude},${destino.longitude}" +
+                    "&mode=$modoSeleccionado" +
+                    "&key=${getString(R.string.google_maps_key)}"
 
         client.newCall(Request.Builder().url(url).build()).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {}
+            override fun onFailure(call: Call, e: IOException) {
+                runOnUiThread {
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Error al conectar con el servidor. Verifica tu conexión.",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+
             override fun onResponse(call: Call, response: Response) {
-                val json = JSONObject(response.body?.string() ?: return)
-                val path = PolyUtil.decode(
-                    json.getJSONArray("routes")
-                        .getJSONObject(0)
-                        .getJSONObject("overview_polyline")
-                        .getString("points")
-                )
+                val jsonString = response.body?.string() ?: ""
+                val json = JSONObject(jsonString)
+                val routes = json.optJSONArray("routes")
+
+                // ⚠️ Verificación: si no hay rutas
+                if (routes == null || routes.length() == 0) {
+                    runOnUiThread {
+                        Toast.makeText(
+                            this@MainActivity,
+                            "🚫 Ninguna ruta disponible cerca del vehículo o del destino seleccionado.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                    return
+                }
+
+                // ✅ Obtener la primera ruta
+                val overview = routes.getJSONObject(0)
+                    .getJSONObject("overview_polyline")
+                    .getString("points")
+
+                val path = PolyUtil.decode(overview)
                 rutaCompleta = path
 
                 runOnUiThread {
                     polyline?.remove()
                     polyline = googleMap.addPolyline(
-                        PolylineOptions().addAll(path).color(Color.BLUE).width(10f)
+                        PolylineOptions()
+                            .addAll(path)
+                            .color(Color.BLUE)
+                            .width(10f)
                     )
 
+                    // Calcular distancia aproximada
                     val distanciaKm = path.size * 0.03
                     val tipo = TipoRuta.values()[spnModo.selectedItemPosition]
-                    val idUsuario = getSharedPreferences("EcoRutasPrefs", MODE_PRIVATE).getInt("usuario_id", -1)
+                    val idUsuario =
+                        getSharedPreferences("EcoRutasPrefs", MODE_PRIVATE).getInt("usuario_id", -1)
 
+                    // Guardar ruta en la BD
                     RutaRepository(this@MainActivity).crearRutaAutomatica(
                         nombre = "Ruta ${System.currentTimeMillis()}",
                         puntoInicio = "${origen.latitude},${origen.longitude}",
@@ -268,14 +358,25 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                         idUsuario = idUsuario,
                         onSuccess = { rutaCreada ->
                             idRutaActual = rutaCreada.id_ruta
-                            Toast.makeText(this@MainActivity, "Ruta creada ID: $idRutaActual", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                this@MainActivity,
+                                "Ruta creada ID: $idRutaActual",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         },
-                        onError = { Toast.makeText(this@MainActivity, "No se creó ruta", Toast.LENGTH_SHORT).show() }
+                        onError = {
+                            Toast.makeText(
+                                this@MainActivity,
+                                "Error al crear la ruta en la base de datos.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     )
                 }
             }
         })
     }
+
 
     // ✅ FINALIZAR RUTA
     private fun finalizarRuta() {
@@ -306,6 +407,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 R.id.action_estadisticas -> startActivity(Intent(this, EstadisticasActivity::class.java))
                 R.id.action_logros -> startActivity(Intent(this, LogrosActivity::class.java))
                 R.id.action_historial -> startActivity(Intent(this, HistorialRutaActivity::class.java))
+                R.id.action_GenerarQR -> startActivity(Intent(this, QrRutaActivity::class.java))
             }
             true
         }

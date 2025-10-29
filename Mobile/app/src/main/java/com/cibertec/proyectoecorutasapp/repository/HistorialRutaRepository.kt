@@ -14,7 +14,7 @@ class HistorialRutaRepository(context: Context) {
     private val dao = HistorialRutaDao(context)
     private val api = ApiClient.create(HistorialRutaApi::class.java)
 
-    // 🔹 Listar historial (desde API o base local)
+
     fun listarHistorial(onSuccess: (List<HistorialRuta>) -> Unit, onError: (String) -> Unit) {
         api.listarHistorial().enqueue(object : Callback<List<HistorialRuta>> {
             override fun onResponse(call: Call<List<HistorialRuta>>, response: Response<List<HistorialRuta>>) {
@@ -33,7 +33,7 @@ class HistorialRutaRepository(context: Context) {
         })
     }
 
-    // 🔹 Registrar historial completo (objeto)
+
     fun registrarHistorial(historial: HistorialRuta, onSuccess: () -> Unit, onError: (String) -> Unit) {
         api.registrarHistorial(historial).enqueue(object : Callback<HistorialRuta> {
             override fun onResponse(call: Call<HistorialRuta>, response: Response<HistorialRuta>) {
