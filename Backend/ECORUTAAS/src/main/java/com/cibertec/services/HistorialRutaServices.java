@@ -27,4 +27,17 @@ public class HistorialRutaServices {
 	 public HistorialRuta registrar(HistorialRuta Nuevo) {
 	        return historial.save(Nuevo);
 	    }
+	 
+	 public Integer registrarHistorialLibre(
+	            Integer idUsuario,
+	            String nombreRuta,
+	            String puntoInicio,
+	            String puntoFin,
+	            Double distancia,
+	            String tipo,
+	            Integer duracion,
+	            Double co2) {
+
+	        return historial.registrarHistorialLibre(idUsuario, nombreRuta, puntoInicio, puntoFin, distancia, tipo, duracion, co2);
+	    }
 }

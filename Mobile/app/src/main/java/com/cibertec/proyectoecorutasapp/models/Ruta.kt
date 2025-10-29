@@ -10,8 +10,13 @@ data class Ruta(
     val tipo: TipoRuta,
     val estado: EstadoRuta = EstadoRuta.activa,
     val fecha_creacion: String?,
-    val usuario: Usuario?
+    val usuario: Usuario?,
+
+    // Coordenadas de destino (solo en memoria)
+    val lat_destino: Double? = null,
+    val lng_destino: Double? = null
 )
+
 
 enum class TipoRuta {
     BICICLETA, SCOOTER, MONOPATIN_ELECTRICO, SEGWAY, CARPOOL

@@ -26,7 +26,6 @@
     <string name="default_web_client_id">tu_client_id_de_firebase</string>
 
 
-
     <string name="msg_complete_fields">Completa todos los campos</string>
     <string name="msg_error">Error: %1$s</string>
     <string name="msg_user_registered">Usuario registrado</string>
@@ -46,6 +45,9 @@
 
     <string name="mis_logros">Mis Logros</string>
     <string name="icono_logro">Ícono de logro</string>
+
+
+    <string name="historial_rutas">Historial</string>
 
     <string name="estadisticas">Estadísticas</string>
     <string name="resumen_general">Resumen General</string>
@@ -67,8 +69,6 @@
         <item>MONOPATIN_ELECTRICO</item>
         <item>SEGWAY</item>
     </string-array>
-
-
 
 
 </resources>

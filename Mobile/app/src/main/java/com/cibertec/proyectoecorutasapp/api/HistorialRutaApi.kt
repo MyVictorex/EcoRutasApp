@@ -10,7 +10,10 @@ interface HistorialRutaApi {
     @GET("Historial")
     fun listarHistorial(): Call<List<HistorialRuta>>
 
-    // 🔹 Registrar un nuevo historial
+    // 🔹 Registrar un historial normal
     @POST("Historial")
     fun registrarHistorial(@Body nuevo: HistorialRuta): Call<HistorialRuta>
+
+
+
 }

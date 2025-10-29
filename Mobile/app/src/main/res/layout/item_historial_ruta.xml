@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:background="@drawable/bg_item_card"
+    android:layout_marginBottom="8dp">
+
+    <TextView
+        android:id="@+id/txtNombreRuta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ruta Central"
+        android:textStyle="bold"
+        android:textSize="17sp"
+        android:textColor="@android:color/black" />
+
+    <TextView
+        android:id="@+id/txtFechaRuta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Fecha inicio: 2025-10-01"
+        android:textColor="#333333" />
+
+    <TextView
+        android:id="@+id/txtDistanciaRuta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Distancia: 8.5 km"
+        android:textColor="#333333" />
+
+    <TextView
+        android:id="@+id/txtCo2Ruta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CO₂ ahorrado: 1.2 kg"
+        android:textColor="#333333" />
+
+</LinearLayout>

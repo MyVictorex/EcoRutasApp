@@ -42,6 +42,8 @@ public class SecurityConfig {
                     "/api/rutas/**",
                     "/api/estadisticas",
                     "/api/estadisticas/**",
+                    "/api/Historial/",
+                    "/api/Historial/**",
                     "/api/logros",       // ✅ Permite listar logros
                     "/api/logros/**"     // ✅ Permite insertar y actualizar logros
                 ).permitAll()

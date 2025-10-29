@@ -31,6 +31,8 @@ import com.google.maps.android.PolyUtil
 import okhttp3.*
 import org.json.JSONObject
 import java.io.IOException
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -46,16 +48,16 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var tvOrigen: TextView
     private lateinit var tvDestino: TextView
     private lateinit var tvTiempoEstimado: TextView
-    private lateinit var btnTrazarRuta: Button
     private lateinit var spnModo: Spinner
+    private lateinit var btnFinalizar: Button
 
     private var modoSeleccionado: String = "driving"
     private val client = OkHttpClient()
 
-    // 🟢 Seguimiento en tiempo real
     private var recorridoPolyline: Polyline? = null
     private var rutaCompleta: List<LatLng> = emptyList()
     private val LOCATION_PERMISSION_REQUEST_CODE = 100
+    private var esRutaLibre: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,9 +80,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         tvOrigen = findViewById(R.id.tvOrigen)
         tvDestino = findViewById(R.id.tvDestino)
         tvTiempoEstimado = findViewById(R.id.tvTiempoEstimado)
-        btnTrazarRuta = findViewById(R.id.btnTrazarRuta)
         spnModo = findViewById(R.id.spnModo)
-
+        btnFinalizar = findViewById(R.id.btnFinalizarRuta)
         val menuIcon = findViewById<ImageView>(R.id.menuIcon)
         val profileIcon = findViewById<ImageView>(R.id.profileIcon)
 
@@ -90,19 +91,26 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         setupSpinner()
         setupDestinoSearch()
 
-        btnTrazarRuta.setOnClickListener {
-            if (origenLocation != null && destinoLocation != null) {
-                trazarRuta(origenLocation!!, destinoLocation!!)
-            } else {
-                Toast.makeText(this, "Selecciona un destino primero", Toast.LENGTH_SHORT).show()
-            }
-        }
-
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.mapContainer) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
+        // Revisar si llegaron coordenadas desde RutaAdapter
+        val latDestino = intent.getDoubleExtra("lat_destino", Double.NaN)
+        val lngDestino = intent.getDoubleExtra("lng_destino", Double.NaN)
+        if (!latDestino.isNaN() && !lngDestino.isNaN()) {
+            destinoLocation = LatLng(latDestino, lngDestino)
+            tvDestino.text = "Destino: $latDestino, $lngDestino"
+            esRutaLibre = false
+        }
+
+        // 🔹 Botón Finalizar Ruta
+        btnFinalizar.setOnClickListener {
+            finalizarRuta()
+        }
     }
 
+    // ------------------- Spinner -------------------
     private fun setupSpinner() {
         ArrayAdapter.createFromResource(
             this,
@@ -114,9 +122,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         spnModo.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>, view: android.view.View?, position: Int, id: Long
-            ) {
+            override fun onItemSelected(parent: AdapterView<*>, view: android.view.View?, position: Int, id: Long) {
                 modoSeleccionado = when (position) {
                     0 -> "bicycling"
                     1 -> "driving"
@@ -125,16 +131,33 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                     4 -> "walking"
                     else -> "driving"
                 }
+                if (origenLocation != null && destinoLocation != null) {
+                    trazarRuta(origenLocation!!, destinoLocation!!)
+                    esRutaLibre = false
+                }
             }
-
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
     }
 
+    // ------------------- Método para obtener tipo de transporte -------------------
+    private fun obtenerTipoDesdeSpinner(): String {
+        return when (spnModo.selectedItemPosition) {
+            0 -> "BICICLETA"
+            1 -> "SCOOTER"
+            2 -> "MONOPATIN_ELECTRICO"
+            3 -> "SEGWAY"
+            4 -> "CARPOOL"
+            else -> "BICICLETA"
+        }
+    }
+
+    // ------------------- Destino -------------------
     private fun setupDestinoSearch() {
         tvDestino.setOnClickListener { abrirAutocomplete() }
     }
 
+    // ------------------- Map -------------------
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
         googleMap.uiSettings.isZoomControlsEnabled = true
@@ -166,7 +189,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             solicitarPermisosUbicacion()
         }
 
-        // --- NUEVO: Permitir seleccionar destino con clic en el mapa ---
         googleMap.setOnMapClickListener { latLng ->
             destinoLocation = latLng
             destinoMarker?.remove()
@@ -177,13 +199,15 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
             )
             tvDestino.text = "Destino: ${latLng.latitude}, ${latLng.longitude}"
+            origenLocation?.let { trazarRuta(it, destinoLocation!!) }
+            esRutaLibre = true
         }
     }
 
+    // ------------------- Permisos -------------------
     private fun tienePermisosUbicacion(): Boolean {
         return ContextCompat.checkSelfPermission(
-            this,
-            Manifest.permission.ACCESS_FINE_LOCATION
+            this, Manifest.permission.ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
     }
 
@@ -196,36 +220,30 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun mostrarUbicacionUsuario() {
+        if (!tienePermisosUbicacion()) {
+            solicitarPermisosUbicacion()
+            return
+        }
         try {
-            if (!tienePermisosUbicacion()) {
-                solicitarPermisosUbicacion()
-                return
-            }
-
             googleMap.isMyLocationEnabled = true
-
             fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
                 .addOnSuccessListener { location ->
                     if (location != null) {
                         origenLocation = LatLng(location.latitude, location.longitude)
                         tvOrigen.text = "Ubicación actual obtenida"
                         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(origenLocation!!, 15f))
+                        destinoLocation?.let { trazarRuta(origenLocation!!, it) }
                     } else {
-                        Toast.makeText(this, "No se pudo obtener la ubicación actual", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "No se pudo obtener la ubicación", Toast.LENGTH_SHORT).show()
                     }
                 }
-
         } catch (e: SecurityException) {
             e.printStackTrace()
             Toast.makeText(this, "Permiso de ubicación no disponible", Toast.LENGTH_SHORT).show()
         }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE &&
             grantResults.isNotEmpty() &&
@@ -237,6 +255,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    // ------------------- Autocomplete -------------------
     private fun abrirAutocomplete() {
         val fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG)
         val bounds = RectangularBounds.newInstance(
@@ -266,6 +285,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
                     )
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(it, 14f))
+                    origenLocation?.let { o -> trazarRuta(o, it) }
+                    esRutaLibre = false
                 }
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 val status = Autocomplete.getStatusFromIntent(data!!)
@@ -274,6 +295,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    // ------------------- Trazar Ruta -------------------
     private fun trazarRuta(origen: LatLng, destino: LatLng) {
         val url = "https://maps.googleapis.com/maps/api/directions/json?" +
                 "origin=${origen.latitude},${origen.longitude}" +
@@ -294,7 +316,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 val body = response.body?.string() ?: return
                 val json = JSONObject(body)
                 val routes = json.getJSONArray("routes")
-
                 if (routes.length() == 0) {
                     runOnUiThread {
                         Toast.makeText(this@MainActivity, "No se encontró ruta", Toast.LENGTH_SHORT).show()
@@ -331,6 +352,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         })
     }
 
+    // ------------------- Seguimiento -------------------
     private fun iniciarSeguimientoRuta() {
         if (!tienePermisosUbicacion()) return
 
@@ -379,27 +401,67 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         )
     }
 
+    // ------------------- Finalizar Ruta -------------------
+    private fun finalizarRuta() {
+        if (rutaCompleta.isEmpty()) {
+            Toast.makeText(this, "No hay ruta para finalizar", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (esRutaLibre) {
+            val json = JSONObject()
+            json.put("usuario_id", auth.currentUser?.uid)
+            json.put("ruta", rutaCompleta.map { listOf(it.latitude, it.longitude) })
+            json.put("tipo", obtenerTipoDesdeSpinner()) // <-- Aquí usamos el spinner
+
+            val body = json.toString().toRequestBody("application/json; charset=utf-8".toMediaType())
+            val request = Request.Builder()
+                .url("https://tuapi.com/registrar_ruta_libre") // reemplaza con tu endpoint
+                .post(body)
+                .build()
+
+            client.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    runOnUiThread {
+                        Toast.makeText(this@MainActivity, "Error al registrar ruta", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                override fun onResponse(call: Call, response: Response) {
+                    runOnUiThread {
+                        Toast.makeText(this@MainActivity, "Ruta libre registrada correctamente", Toast.LENGTH_SHORT).show()
+                        limpiarRuta()
+                    }
+                }
+            })
+        } else {
+            Toast.makeText(this, "Ruta finalizada", Toast.LENGTH_SHORT).show()
+            limpiarRuta()
+        }
+    }
+
+    private fun limpiarRuta() {
+        polyline?.remove()
+        recorridoPolyline?.remove()
+        destinoMarker?.remove()
+        rutaCompleta = emptyList()
+        destinoLocation = null
+        esRutaLibre = false
+
+        tvDestino.text = "Destino: --"
+        tvTiempoEstimado.text = "Tiempo estimado: --"
+    }
+
+    // ------------------- Menús -------------------
     private fun showMainMenu(anchor: ImageView) {
         val popup = PopupMenu(this, anchor)
         popup.menuInflater.inflate(R.menu.menu_nav, popup.menu)
         popup.setOnMenuItemClickListener { item ->
             when (item.itemId) {
-                R.id.action_alquiler -> {
-                    startActivity(Intent(this, AlquilerActivity::class.java))
-                    true
-                }
-                R.id.action_rutas -> {
-                    startActivity(Intent(this, RutaActivity::class.java))
-                    true
-                }
-                R.id.action_estadisticas -> {
-                    startActivity(Intent(this, EstadisticasActivity::class.java))
-                    true
-                }
-                R.id.action_logros -> {
-                    startActivity(Intent(this, LogrosActivity::class.java))
-                    true
-                }
+                R.id.action_alquiler -> { startActivity(Intent(this, AlquilerActivity::class.java)); true }
+                R.id.action_rutas -> { startActivity(Intent(this, RutaActivity::class.java)); true }
+                R.id.action_estadisticas -> { startActivity(Intent(this, EstadisticasActivity::class.java)); true }
+                R.id.action_logros -> { startActivity(Intent(this, LogrosActivity::class.java)); true }
+                R.id.action_historial -> { startActivity(Intent(this, HistorialRutaActivity::class.java)); true }
                 else -> false
             }
         }
@@ -411,10 +473,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         popup.menuInflater.inflate(R.menu.menu_perfil, popup.menu)
         popup.setOnMenuItemClickListener { item ->
             when (item.itemId) {
-                R.id.action_editar -> {
-                    startActivity(Intent(this, PerfilActivity::class.java))
-                    true
-                }
+                R.id.action_editar -> { startActivity(Intent(this, PerfilActivity::class.java)); true }
                 R.id.action_cerrar_sesion -> {
                     auth.signOut()
                     startActivity(Intent(this, LoginActivity::class.java))

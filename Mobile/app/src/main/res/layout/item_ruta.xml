@@ -63,6 +63,16 @@
             android:textSize="14sp"
             android:layout_marginTop="2dp" />
 
+        <Button
+            android:id="@+id/btnIniciarRuta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Iniciar Ruta"
+            android:backgroundTint="#2E7D32"
+            android:textColor="#FFF" />
+
+
     </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>
