@@ -11,22 +11,24 @@ import com.cibertec.repository.IRepositoryVehiculo;
 
 @Service
 public class VehiculoServices {
-	@Autowired
-	private IRepositoryVehiculo Carrito;
-	
-	public List<Vehiculo> Carros(){
-		
-		
-		return Carrito.findAll();
-	}
-	
-	public Vehiculo Insertar(Vehiculo NuevoCarrito)
-	{
-		
-		return Carrito.save(NuevoCarrito);
-	}
-	
-	public Vehiculo Cambios(Integer id, Vehiculo datos) {
+    @Autowired
+    private IRepositoryVehiculo Carrito;
+
+    public List<Vehiculo> Carros(){
+        return Carrito.findAll();
+    }
+
+    public List<Vehiculo> disponibles() {
+        return Carros().stream()
+                .filter(v -> Boolean.TRUE.equals(v.getDisponible()))
+                .toList();
+    }
+
+    public Vehiculo Insertar(Vehiculo NuevoCarrito) {
+        return Carrito.save(NuevoCarrito);
+    }
+
+    public Vehiculo Cambios(Integer id, Vehiculo datos) {
         Optional<Vehiculo> optional = Carrito.findById(id);
         if (optional.isPresent()) {
             Vehiculo v = optional.get();
@@ -36,13 +38,11 @@ public class VehiculoServices {
             v.setUbicacion_actual(datos.getUbicacion_actual());
             v.setFecha_registro(datos.getFecha_registro());
             return Carrito.save(v);
-        } else {
-            return null;
         }
+        return null;
     }
 
-
     public void Descartado(Integer id) {
-    	Carrito.deleteById(id);
+        Carrito.deleteById(id);
     }
 }

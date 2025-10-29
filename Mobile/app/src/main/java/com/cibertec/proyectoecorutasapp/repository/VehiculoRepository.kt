@@ -40,7 +40,21 @@ class VehiculoRepository(context: Context) {
         })
     }
 
+    fun listarDisponibles(onSuccess: (List<Vehiculo>) -> Unit, onError: (String) -> Unit) {
+        api.listarDisponibles().enqueue(object : Callback<List<Vehiculo>> {
+            override fun onResponse(call: Call<List<Vehiculo>>, response: Response<List<Vehiculo>>) {
+                if (response.isSuccessful) {
+                    onSuccess(response.body() ?: emptyList())
+                } else {
+                    onError("Error al cargar vehículos disponibles")
+                }
+            }
 
+            override fun onFailure(call: Call<List<Vehiculo>>, t: Throwable) {
+                onError(t.message ?: "Error de conexión")
+            }
+        })
+    }
     fun registrarVehiculo(
         vehiculo: Vehiculo,
         onSuccess: () -> Unit,

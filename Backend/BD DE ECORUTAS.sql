@@ -96,7 +96,7 @@ CREATE TABLE historial_ruta (
 );
 
 
-
+select*From historial_ruta;
 
 
 
@@ -135,7 +135,7 @@ INSERT INTO ruta (nombre, descripcion, punto_inicio, punto_fin, distancia_km, ti
 ('Ruta Central', 'Recorrido principal por el centro de Lima', 'Plaza Mayor', 'Parque Kennedy', 8.5, 'BICICLETA', 'activa', '2025-10-01 08:30:00', 1),
 ('Ruta Verde', 'Ruta ecológica con árboles y poco tráfico', 'San Borja', 'Surco', 5.2, 'BICICLETA', 'activa', '2025-10-02 09:15:00', 2);
 
-select*from Ruta;
+select*from vehiculo;
 
 INSERT INTO vehiculo (tipo, codigo_qr, disponible, ubicacion_actual) VALUES
 ('BICICLETA', 'QRB-001', TRUE, 'Plaza Mayor'),

@@ -40,5 +40,13 @@ public class VehiculoController {
     public void eliminar(@PathVariable Integer id) {
         vehiculoServices.Descartado(id);
     }
+    
+    
+    @GetMapping("/disponibles")
+    public List<Vehiculo> disponibles() {
+        return vehiculoServices.disponibles();
+    }
+
+
 }
 

@@ -8,7 +8,8 @@ interface VehiculoApi {
 
     @GET("vehiculos")
     fun listarVehiculos(): Call<List<Vehiculo>>
-
+    @GET("vehiculos/disponibles")
+    fun listarDisponibles(): Call<List<Vehiculo>>
     @POST("vehiculos")
     fun registrarVehiculo(@Body nuevo: Vehiculo): Call<Vehiculo>
 
