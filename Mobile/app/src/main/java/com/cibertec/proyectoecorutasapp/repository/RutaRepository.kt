@@ -5,6 +5,8 @@ import com.cibertec.proyectoecorutasapp.api.ApiClient
 import com.cibertec.proyectoecorutasapp.api.RutaApi
 import com.cibertec.proyectoecorutasapp.data.dao.RutaDao
 import com.cibertec.proyectoecorutasapp.models.Ruta
+import com.cibertec.proyectoecorutasapp.models.TipoRuta
+import com.cibertec.proyectoecorutasapp.models.Usuario
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -89,4 +91,46 @@ class RutaRepository(context: Context) {
             }
         })
     }
+
+    fun crearRutaAutomatica(
+        nombre: String,
+        puntoInicio: String,
+        puntoFin: String,
+        distancia: Double,
+        tipo: TipoRuta,
+        idUsuario: Int,
+        onSuccess: (Ruta) -> Unit,
+        onError: (String) -> Unit
+    ) {
+        val ruta = Ruta(
+            id_ruta = null,
+            nombre = nombre,
+            descripcion = "Ruta generada automáticamente desde el mapa",
+            punto_inicio = puntoInicio,
+            punto_fin = puntoFin,
+            distancia_km = distancia,
+            tipo = tipo,
+            usuario = Usuario(id_usuario = idUsuario, nombre = "", apellido = "", correo = "", password = "", rol = Usuario.Rol.usuario, fecha_registro = null),
+            fecha_creacion = null
+        )
+
+        api.registrarRuta(ruta).enqueue(object : Callback<Ruta> {
+            override fun onResponse(call: Call<Ruta>, response: Response<Ruta>) {
+                if (response.isSuccessful) {
+                    onSuccess(response.body()!!)
+                } else {
+                    onError("Error: ${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: Call<Ruta>, t: Throwable) {
+                onError(t.message ?: "Error al registrar ruta")
+            }
+        })
+    }
+
+
+
+
+
 }
