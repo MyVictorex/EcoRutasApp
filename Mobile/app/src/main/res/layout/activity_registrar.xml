@@ -9,7 +9,7 @@
     android:background="#A8F5A2"
     tools:context=".ui.RegistrarActivity">
 
-    <!-- Logo -->
+
     <ImageView
         android:id="@+id/logoImage"
         android:layout_width="150dp"
@@ -20,7 +20,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Campo: Nombre Completo -->
+
     <EditText
         android:id="@+id/etNombreCompleto"
         android:layout_width="0dp"
@@ -36,7 +36,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintWidth_percent="0.8" />
 
-    <!-- Campo: Apellido -->
+
     <EditText
         android:id="@+id/etApellido"
         android:layout_width="0dp"
@@ -51,7 +51,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintWidth_percent="0.8" />
 
-    <!-- Campo: Correo Electrónico -->
+
     <EditText
         android:id="@+id/etCorreo"
         android:layout_width="0dp"
@@ -67,11 +67,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintWidth_percent="0.8" />
 
-    <!-- Campo: Teléfono -->
-
-    <!-- Campo: Contraseña -->
-
-    <!-- Campo: Confirmar Contraseña -->
+ 
 
     <EditText
         android:id="@+id/etContrasena"

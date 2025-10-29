@@ -33,7 +33,7 @@ class QrRutaActivity : AppCompatActivity() {
         btnEscanearQr.setOnClickListener { iniciarEscaneo() }
     }
 
-    // ✅ Generar QR
+
     private fun generarQrDeRuta() {
         val rutaJson = JSONObject().apply {
             put("tipo", "ruta")
@@ -58,7 +58,7 @@ class QrRutaActivity : AppCompatActivity() {
         }
     }
 
-    // ✅ Escanear QR
+
     private fun iniciarEscaneo() {
         val integrator = IntentIntegrator(this)
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)

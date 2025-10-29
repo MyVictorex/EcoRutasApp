@@ -8,7 +8,7 @@
     android:background="#A8E6A3"
     tools:context=".ui.AlquilerActivity">
 
-    <!-- Toolbar superior -->
+
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="0dp"
@@ -22,7 +22,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Lista de alquileres -->
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvAlquileres"
         android:layout_width="0dp"
@@ -37,7 +37,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         tools:listitem="@layout/item_alquiler" />
 
-    <!-- Botón flotante para iniciar nuevo alquiler -->
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabNuevoAlquiler"
         android:layout_width="wrap_content"

@@ -7,7 +7,7 @@
     android:background="#A8E6A3"
     tools:context=".ui.LogrosActivity">
 
-    <!-- Toolbar -->
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarLogros"
         android:layout_width="0dp"
@@ -19,7 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Lista de logros -->
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvLogros"
         android:layout_width="0dp"

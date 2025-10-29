@@ -37,19 +37,19 @@ class LoginActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         usuarioDao = UsuarioDao(this)
 
-        // Configurar Google Sign-In
+
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
         googleClient = GoogleSignIn.getClient(this, gso)
 
-        // Ir a registro
+
         b.tvRegistro.setOnClickListener {
             startActivity(Intent(this, RegistrarActivity::class.java))
         }
 
-        // Login manual (correo y contraseña)
+
         b.btnIniciarSesion.setOnClickListener {
             val email = b.etCorreo.text.toString().trim()
             val pass = b.etContrasena.text.toString().trim()
@@ -59,13 +59,13 @@ class LoginActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // 🔹 Intentar login con Firebase primero
+
             auth.signInWithEmailAndPassword(email, pass)
                 .addOnSuccessListener {
                     loginBackend(email, pass)
                 }
                 .addOnFailureListener {
-                    // 🔸 Sin conexión o error → intentar login local
+
                     val localUser = usuarioDao.autenticar(email, pass)
                     if (localUser != null) {
                         guardarUsuarioSesion(localUser)
@@ -78,14 +78,14 @@ class LoginActivity : AppCompatActivity() {
                 }
         }
 
-        // Login con Google
+
         b.btnGoogle.setOnClickListener {
             val signInIntent = googleClient.signInIntent
             googleLauncher.launch(signInIntent)
         }
     }
 
-    // Launcher para el login de Google
+
     private val googleLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
@@ -97,7 +97,7 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-    // Autenticación en Firebase con Google
+
     private fun firebaseAuthWithGoogle(account: GoogleSignInAccount?) {
         val credential = GoogleAuthProvider.getCredential(account?.idToken, null)
         auth.signInWithCredential(credential)
@@ -114,7 +114,7 @@ class LoginActivity : AppCompatActivity() {
             }
     }
 
-    // 🔹 Login contra el backend (correo y contraseña)
+
     private fun loginBackend(email: String, password: String) {
         val credenciales = mapOf("correo" to email, "password" to password)
 
@@ -153,7 +153,7 @@ class LoginActivity : AppCompatActivity() {
         })
     }
 
-    // 🔹 Login con Google hacia backend + guardar localmente
+
     private fun loginGoogleBackend(idToken: String?, displayName: String?, email: String?) {
         if (idToken.isNullOrEmpty()) {
             toast("Token inválido de Google")
@@ -172,7 +172,7 @@ class LoginActivity : AppCompatActivity() {
                     startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                     finish()
                 } else {
-                    // Si backend no lo tiene, crearlo localmente
+
                     val nameParts = displayName?.split(" ") ?: listOf()
                     val nuevoUsuario = Usuario(
                         id_usuario = null,
@@ -207,7 +207,6 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    // 🔹 Guardar usuario en SharedPreferences
     private fun guardarUsuarioSesion(usuario: Usuario) {
         val prefs = getSharedPreferences("EcoRutasPrefs", MODE_PRIVATE)
         prefs.edit()

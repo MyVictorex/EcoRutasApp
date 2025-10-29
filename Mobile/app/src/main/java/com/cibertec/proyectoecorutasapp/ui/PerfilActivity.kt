@@ -22,36 +22,34 @@ class PerfilActivity : AppCompatActivity() {
 
         repository = UsuarioRepository(this)
 
-        // 🔹 Cargar el usuario actual
+
         cargarUsuarioActual()
 
-        // 🔹 Modo editar
         b.btnEditarPerfil.setOnClickListener { mostrarModoEdicion(true) }
 
-        // 🔹 Guardar cambios
+
         b.btnGuardarCambios.setOnClickListener { guardarCambios() }
 
-        // 🔹 Cerrar sesión
+
         b.btnCerrarSesion.setOnClickListener { cerrarSesion() }
 
-        // 🔹 Cancelar edición
+
         b.btnCancelarEdicion.setOnClickListener { mostrarModoEdicion(false) }
     }
 
-    // --- Cargar usuario desde prefs o backend
+
     private fun cargarUsuarioActual() {
         val prefs = getSharedPreferences("EcoRutasPrefs", MODE_PRIVATE)
         val idUsuario = prefs.getInt("usuario_id", -1)
 
         if (idUsuario != -1) {
-            // 🔹 Intentar cargar localmente primero
+
             val localUsuario = repository.obtenerUsuarioLocal(idUsuario)
             if (localUsuario != null) {
                 usuarioActual = localUsuario
                 mostrarUsuario(localUsuario)
             }
 
-            // 🔹 Luego intentar sincronizar con backend
             repository.obtenerUsuarioPorId(
                 idUsuario,
                 onSuccess = { usuario ->
@@ -71,7 +69,7 @@ class PerfilActivity : AppCompatActivity() {
 
 
 
-    // --- Mostrar usuario en vistas y EditText
+
     private fun mostrarUsuario(usuario: Usuario) {
         // TextViews
         b.tvNombreUsuario.text = "${usuario.nombre} ${usuario.apellido ?: ""}"
@@ -84,13 +82,13 @@ class PerfilActivity : AppCompatActivity() {
         b.etContrasenaPerfil.setText(usuario.password ?: "")
     }
 
-    // --- Alternar entre modo vista y edición
+
     private fun mostrarModoEdicion(editar: Boolean) {
         if (editar) {
             b.layoutDatos.visibility = View.GONE
             b.layoutEdicion.visibility = View.VISIBLE
 
-            // 🔹 Rellenar EditText cada vez que se activa la edición
+
             usuarioActual?.let { usuario ->
                 b.etNombrePerfil.setText(usuario.nombre)
                 b.etApellidoPerfil.setText(usuario.apellido ?: "")
@@ -104,7 +102,7 @@ class PerfilActivity : AppCompatActivity() {
         }
     }
 
-    // --- Guardar cambios en backend y local
+
     private fun guardarCambios() {
         val usuario = usuarioActual?.copy(
             nombre = b.etNombrePerfil.text.toString(),

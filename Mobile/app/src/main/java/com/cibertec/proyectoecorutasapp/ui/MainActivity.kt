@@ -139,7 +139,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    // ✅ MOSTRAR UBICACIÓN ACTUAL
+
     private fun mostrarUbicacionUsuario() {
         if (!tienePermisosUbicacion()) {
             solicitarPermisosUbicacion()
@@ -199,7 +199,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             tvDestino.text = "Destino: ${latLng.latitude}, ${latLng.longitude}"
         }
 
-        // 🔹 Verificar si viene desde un QR
+
         val qrInicio = intent.getStringExtra("qr_inicio")
         val qrFin = intent.getStringExtra("qr_fin")
         val qrNombre = intent.getStringExtra("qr_nombre")
@@ -224,7 +224,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    // ✅ OBTENER UBICACIÓN ACTUAL CON CALLBACK
+
     private fun obtenerUbicacionActual(callback: (android.location.Location) -> Unit) {
         val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         if (ActivityCompat.checkSelfPermission(
@@ -274,11 +274,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         spnModo.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                 modoSeleccionado = when (position) {
-                    0 -> "bicycling"   // BICICLETA 🚴‍♂️
-                    1 -> "driving"   // SCOOTER usa el mismo modo que bicicleta
-                    2 -> "driving"     // CARPOOL usa modo auto
-                    3 -> "bicycling"   // MONOPATÍN ELÉCTRICO similar a bici
-                    4 -> "walking"     // SEGWAY lo tratamos como caminando
+                    0 -> "bicycling"
+                    1 -> "driving"
+                    2 -> "driving"
+                    3 -> "bicycling"
+                    4 -> "walking"
                     else -> "bicycling"
                 }
             }
@@ -287,8 +287,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
 
-    // ✅ TRAZAR RUTA Y CREAR EN BD
-    // ✅ TRAZAR RUTA Y CREAR EN BD (Versión segura)
+
     private fun trazarRuta(origen: LatLng, destino: LatLng) {
         val url =
             "https://maps.googleapis.com/maps/api/directions/json?" +
@@ -313,7 +312,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 val json = JSONObject(jsonString)
                 val routes = json.optJSONArray("routes")
 
-                // ⚠️ Verificación: si no hay rutas
+
                 if (routes == null || routes.length() == 0) {
                     runOnUiThread {
                         Toast.makeText(
@@ -325,7 +324,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                     return
                 }
 
-                // ✅ Obtener la primera ruta
+
                 val overview = routes.getJSONObject(0)
                     .getJSONObject("overview_polyline")
                     .getString("points")
@@ -342,13 +341,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                             .width(10f)
                     )
 
-                    // Calcular distancia aproximada
+
                     val distanciaKm = path.size * 0.03
                     val tipo = TipoRuta.values()[spnModo.selectedItemPosition]
                     val idUsuario =
                         getSharedPreferences("EcoRutasPrefs", MODE_PRIVATE).getInt("usuario_id", -1)
 
-                    // Guardar ruta en la BD
+
                     RutaRepository(this@MainActivity).crearRutaAutomatica(
                         nombre = "Ruta ${System.currentTimeMillis()}",
                         puntoInicio = "${origen.latitude},${origen.longitude}",
@@ -378,7 +377,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
 
-    // ✅ FINALIZAR RUTA
+
     private fun finalizarRuta() {
         if (idRutaActual == null) {
             Toast.makeText(this, "No hay ruta creada", Toast.LENGTH_SHORT).show()
@@ -396,7 +395,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         idRutaActual = null
     }
 
-    // ✅ MENÚ
     private fun showMainMenu(anchor: ImageView) {
         val popup = PopupMenu(this, anchor)
         popup.menuInflater.inflate(R.menu.menu_nav, popup.menu)

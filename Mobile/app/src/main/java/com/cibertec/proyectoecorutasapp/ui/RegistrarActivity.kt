@@ -38,14 +38,14 @@ class RegistrarActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         usuarioDao = UsuarioDao(this)
 
-        // Configuración Google Sign-In
+
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
-        // 👉 Botón de registro manual
+
         b.btnCrearCuenta.setOnClickListener {
             val nombre = b.etNombreCompleto.text.toString().trim()
             val apellido = b.etApellido.text.toString().trim()

@@ -8,7 +8,7 @@
     android:background="#A8E6A3"
     tools:context=".ui.LoginActivity">
 
-    <!-- Logo EcoRutas -->
+
     <ImageView
         android:id="@+id/logoImage"
         android:layout_width="180dp"
@@ -20,7 +20,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Campo Correo -->
+
     <EditText
         android:id="@+id/etCorreo"
         android:layout_width="0dp"
@@ -37,7 +37,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/logoImage" />
 
-    <!-- Campo Contraseña -->
+
     <EditText
         android:id="@+id/etContrasena"
         android:layout_width="0dp"
@@ -54,7 +54,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/etCorreo" />
 
-    <!-- Botón Iniciar Sesión -->
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnIniciarSesion"
         android:layout_width="0dp"
@@ -70,7 +70,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Texto Registro -->
+
     <TextView
         android:id="@+id/tvRegistro"
         android:layout_width="wrap_content"
@@ -86,7 +86,7 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
 
-    <!-- Botón Iniciar Sesión con Google -->
+
     <com.google.android.gms.common.SignInButton
         android:id="@+id/btnGoogle"
         android:layout_width="wrap_content"

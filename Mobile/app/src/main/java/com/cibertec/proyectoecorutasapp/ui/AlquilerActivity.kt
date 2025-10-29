@@ -40,8 +40,6 @@ class AlquilerActivity : AppCompatActivity() {
 
                 Toast.makeText(this, "Seleccionaste: ${vehiculoSeleccionado.tipo}", Toast.LENGTH_SHORT).show()
 
-                // Aquí después vas a crear el registro del alquiler
-                // (falta un paso y lo hacemos enseguida)
 
             }.show(supportFragmentManager, "BottomSheetVehiculos")
         }

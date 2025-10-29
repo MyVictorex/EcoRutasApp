@@ -37,7 +37,7 @@ class BottomSheetVehiculos (
 
         adapter = ItemVehiculoAdapter(emptyList()) { vehiculo ->
             onVehiculoSeleccionado(vehiculo)
-            dismiss() // cerramos el modal
+            dismiss()
         }
 
         binding.rvVehiculos.layoutManager = LinearLayoutManager(requireContext())

@@ -8,7 +8,7 @@
     android:background="#A8E6A3"
     tools:context=".ui.MainActivity">
 
-    <!-- 🔹 Toolbar superior -->
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="0dp"
@@ -60,7 +60,6 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.appcompat.widget.Toolbar>
 
-    <!-- 🔹 Texto "Mapa de Rutas" -->
     <TextView
         android:id="@+id/tvMapa"
         android:layout_width="wrap_content"
@@ -73,7 +72,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- 🔹 Ubicación, destino, tiempo, spinner y botones -->
+
     <TextView
         android:id="@+id/tvOrigen"
         android:layout_width="0dp"
@@ -149,7 +148,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- 🔹 Fragmento del mapa -->
 
     <Button
         android:id="@+id/btnFinalizarRuta"

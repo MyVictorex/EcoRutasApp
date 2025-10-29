@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <!-- Imagen del QR -->
+
         <ImageView
             android:id="@+id/ivQrRuta"
             android:layout_width="300dp"
@@ -28,7 +28,7 @@
             android:layout_marginBottom="20dp"
             android:contentDescription="QR generado" />
 
-        <!-- Botones -->
+
         <Button
             android:id="@+id/btnGenerarQr"
             android:text="Generar QR"

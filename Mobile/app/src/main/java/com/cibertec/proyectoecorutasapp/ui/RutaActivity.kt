@@ -36,7 +36,6 @@ class RutaActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // Cargar rutas desde el repositorio
         cargarRutas()
     }
 

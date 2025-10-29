@@ -24,7 +24,7 @@ class EstadisticasActivity : AppCompatActivity() {
 
         repository = EstadisticaRepository(this)
 
-        // 🔹 Cargar las estadísticas al abrir la pantalla
+
         cargarEstadisticas()
     }
 
@@ -32,10 +32,10 @@ class EstadisticasActivity : AppCompatActivity() {
         repository.listarEstadisticas(
             onSuccess = { lista ->
                 if (lista.isNotEmpty()) {
-                    // Mostrar la más reciente
+
                     mostrarEstadisticas(lista.last())
                 } else {
-                    // Si no hay datos, generamos uno nuevo
+
                     generarNuevaEstadistica()
                 }
             },

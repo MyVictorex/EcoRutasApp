@@ -15,21 +15,21 @@ class UsuarioRepository(context: Context) {
     private val dao = UsuarioDao(context)
     private val api = ApiClient.create(UsuarioApi::class.java)
 
-    // 🔹 LISTAR usuarios (preferencia API, fallback local)
+
     fun listarUsuarios(onSuccess: (List<Usuario>) -> Unit, onError: (String) -> Unit) {
         api.listarUsuarios().enqueue(object : Callback<List<Usuario>> {
             override fun onResponse(call: Call<List<Usuario>>, response: Response<List<Usuario>>) {
                 if (response.isSuccessful) {
                     val lista = response.body() ?: emptyList()
-                    lista.forEach { dao.insertar(it) } // sincroniza con SQLite
+                    lista.forEach { dao.insertar(it) }
                     onSuccess(lista)
                 } else {
-                    onSuccess(dao.listar()) // sin conexión → local
+                    onSuccess(dao.listar())
                 }
             }
 
             override fun onFailure(call: Call<List<Usuario>>, t: Throwable) {
-                onSuccess(dao.listar()) // sin conexión → local
+                onSuccess(dao.listar())
             }
         })
     }
