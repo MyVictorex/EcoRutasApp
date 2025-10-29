@@ -53,6 +53,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var btnFinalizar: Button
     private lateinit var menuIcon: ImageView
     private lateinit var profileIcon: ImageView
+    private lateinit var btnTrazarRuta: Button
 
     private val client = OkHttpClient()
     private val LOCATION_PERMISSION_REQUEST_CODE = 100
@@ -78,6 +79,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         btnFinalizar = findViewById(R.id.btnFinalizarRuta)
         menuIcon = findViewById(R.id.menuIcon)
         profileIcon = findViewById(R.id.profileIcon)
+        btnTrazarRuta = findViewById(R.id.btnTrazarRuta)
 
         menuIcon.setOnClickListener { showMainMenu(menuIcon) }
         profileIcon.setOnClickListener { showProfileMenu(profileIcon) }
@@ -89,6 +91,21 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
 
         btnFinalizar.setOnClickListener { finalizarRuta() }
+
+        btnTrazarRuta.setOnClickListener {
+            if (origenLocation == null) {
+                Toast.makeText(this, "Obteniendo tu ubicación...", Toast.LENGTH_SHORT).show()
+                mostrarUbicacionUsuario()
+                return@setOnClickListener
+            }
+            if (destinoLocation == null) {
+                Toast.makeText(this, "Selecciona un destino tocando el mapa o buscándolo", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            trazarRuta(origenLocation!!, destinoLocation!!)
+        }
+
     }
 
     // ✅ PERMISOS
@@ -175,6 +192,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
         googleMap.setOnMapClickListener { latLng ->
             destinoLocation = latLng
+
             destinoMarker?.remove()
             destinoMarker = googleMap.addMarker(
                 MarkerOptions()
@@ -182,9 +200,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                     .title("Destino seleccionado")
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
             )
+
             tvDestino.text = "Destino: ${latLng.latitude}, ${latLng.longitude}"
-            origenLocation?.let { trazarRuta(it, latLng) }
         }
+
     }
 
     // ✅ AUTOCOMPLETE
